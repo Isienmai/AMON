@@ -1,0 +1,118 @@
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Parachute midget damaged.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Parachute Midget.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\StartupMessage.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\AMON.exe
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\AMON.pdb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\AMON.csprojResolveAssemblyReference.cache
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\AMON.exe
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\AMON.pdb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Background11.fw.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Background12.fw.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bombs.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\plane.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Rocket.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud1.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud2.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud3.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud4.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bombs.png
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bombs2.xnb
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bomb.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Parachute Midget.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\StartupMessage.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Background11.fw.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Background12.fw.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bombs.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\plane.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Rocket.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud1.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud2.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud3.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Cloud4.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bombs2.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bomb.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Parachute midget damaged.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\AMON.csprojResolveAssemblyReference.cache
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\AMON.exe
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\obj\x86\Debug\AMON.pdb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Bombs.png
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\AMON.exe
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\AMON.pdb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\FailureMessage.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\SpriteFont1.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Plane flipped.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Brilliant.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\CrazySpeech.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\HateFallingQuiet.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\HateFallingShout.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\HowLongUntilIWin.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain1.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain2.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain3.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Pathetic.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\WorseThanMySister.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Explosdi.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Sounds\Explosion.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\VictoryMessage.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Maid with the Flaxen Hair.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Maid with the Flaxen Hair.wma
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Nuke.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Nuke.wmv
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Castle.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Super Street Fighter 2 - Guile's Stage.xnb
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Super Street Fighter 2 - Guile's Stage.wma
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMON\bin\x86\Debug\Content\Images\Shield.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Parachute midget damaged.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Parachute Midget.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\StartupMessage.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Background11.fw.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Background12.fw.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Bombs.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\plane.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Rocket.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Cloud1.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Cloud2.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Cloud3.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Cloud4.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Bombs2.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Bomb.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\FailureMessage.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Plane flipped.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Explosdi.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\VictoryMessage.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Castle.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Shield.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\SpriteFont1.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Brilliant.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\CrazySpeech.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\HateFallingQuiet.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\HateFallingShout.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\HowLongUntilIWin.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain1.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain2.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Pain3.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Pathetic.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\WorseThanMySister.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Sounds\Explosion.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Maid with the Flaxen Hair.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Super Street Fighter 2 - Guile's Stage.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Nuke.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Maid with the Flaxen Hair.wma
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Super Street Fighter 2 - Guile's Stage.wma
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Nuke.wmv
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Images\Bombs.png
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\AMON.exe
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\AMON.pdb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\obj\x86\Debug\AMON.csprojResolveAssemblyReference.cache
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\obj\x86\Debug\AMON.exe
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\obj\x86\Debug\AMON.pdb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\Content\Nukes.xnb
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\AMON.exe.manifest
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\bin\x86\Debug\AMON.application
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\obj\x86\Debug\AMON.exe.manifest
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMON\obj\x86\Debug\AMON.application

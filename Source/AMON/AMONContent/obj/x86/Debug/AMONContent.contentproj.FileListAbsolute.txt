@@ -1,0 +1,3 @@
+\\ctstudent2\studentusers\100290086\Documents\Visual Studio 2010\Projects\AMON\AMON\AMONContent\obj\x86\Debug\AMONContent.contentprojResolveAssemblyReference.cache
+T:\Documents\Visual Studio 2010\Projects\AMON\AMON\AMONContent\obj\x86\Debug\AMONContent.contentprojResolveAssemblyReference.cache
+C:\Users\Isienmai\Documents\UNI\GameJam\AMON\AMONContent\obj\x86\Debug\AMONContent.contentprojResolveAssemblyReference.cache
