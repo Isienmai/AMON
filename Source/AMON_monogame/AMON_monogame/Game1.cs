@@ -31,7 +31,7 @@ namespace AMON
 		public VideoPlayer player;
 		public Texture2D videoTexture;
 
-		//public SoundEffect brilliant, speech, hateFalling, midway, pain1, pain2, pain3, pain4, pathetic, worseThanMySister, explosionSound, explosionSoud;
+		public SoundEffect brilliant, speech, hateFalling, midway, pain1, pain2, pain3, pain4, pathetic, worseThanMySister, explosionSound, explosionSoud;
 		public Song background1;
 
 		public Game1()
@@ -71,7 +71,7 @@ namespace AMON
 			//video1 = Content.Load<Video>("Nuke");
 
 			background1 = Content.Load<Song>("Super Street Fighter 2 - Guile's Stage");
-			/*brilliant = Content.Load<SoundEffect>("Sounds/Brilliant");
+			brilliant = Content.Load<SoundEffect>("Sounds/Brilliant");
 			speech = Content.Load<SoundEffect>("Sounds/CrazySpeech");
 			hateFalling = Content.Load<SoundEffect>("Sounds/HateFallingShout");
 			midway = Content.Load<SoundEffect>("Sounds/HowLongUntilIWin");
@@ -82,7 +82,7 @@ namespace AMON
 			pathetic = Content.Load<SoundEffect>("Sounds/Pathetic");
 			worseThanMySister = Content.Load<SoundEffect>("Sounds/WorseThanMySister");
 			explosionSound = Content.Load<SoundEffect>("Sounds/Explosion");
-			explosionSoud = Content.Load<SoundEffect>("Nukes");*/
+			explosionSoud = Content.Load<SoundEffect>("Nukes");
 
 			startHere.planeImage[0] = Content.Load<Texture2D>("Images/plane");
 			startHere.planeImage[1] = Content.Load<Texture2D>("Images/Plane flipped");
@@ -277,7 +277,7 @@ namespace AMON
 					spriteBatch.Draw(videoTexture, screen, Color.White);
 					if (!finalNukePlayed)
 					{
-						//explosionSoud.Play();
+						explosionSoud.Play();
 						finalNukePlayed = true;
 					}
 					bombTimer++;

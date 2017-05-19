@@ -66,16 +66,16 @@ namespace AMON
             switch (painNoise)
             {
                 case 0:
-                    //gameClass.pain1.Play();
+                    gameClass.pain1.Play();
                     break;
                 case 1:
-                    //gameClass.pain2.Play();
+                    gameClass.pain2.Play();
                     break;
                 case 2:
-                    //gameClass.pain3.Play();
+                    gameClass.pain3.Play();
                     break;
                 case 3:
-                   // gameClass.pain4.Play();
+                    gameClass.pain4.Play();
                     break;
             }
         }
@@ -162,13 +162,13 @@ namespace AMON
             {
                 won = true;
                 MediaPlayer.Stop();
-                //gameClass.speech.Play();
+                gameClass.speech.Play();
                 timeElapsed = 0;
             }
 
             if ((timeElapsed >30f)&&(!midwayPlayed))
             {
-                //gameClass.midway.Play();
+                gameClass.midway.Play();
                 midwayPlayed = true;
             }
         }
@@ -284,8 +284,8 @@ namespace AMON
                         if (poweredUp)
                         {
                             poweredUp = false;
-                            //gameClass.worseThanMySister.Play();
-                            //gameClass.explosionSound.Play();
+                            gameClass.worseThanMySister.Play();
+                            gameClass.explosionSound.Play();
 
                             gameClass.explosion.position = new Vector2(charLocation.X, charLocation.Y);
 
@@ -297,9 +297,9 @@ namespace AMON
                         {
                             failed = true;
                             MediaPlayer.Stop();
-                            //gameClass.pathetic.Play();
+                            gameClass.pathetic.Play();
                             timeElapsed = -100f;
-                            //gameClass.explosionSound.Play();
+                            gameClass.explosionSound.Play();
                         }
                     }
                 }            
@@ -313,8 +313,8 @@ namespace AMON
                 {
                     if (CheckCollision(new Rectangle((int)gameClass.bulletList[j].bulletPos.X, (int)gameClass.bulletList[j].bulletPos.Y, gameClass.bulletList[j].bulletTexture.Width, gameClass.bulletList[j].bulletTexture.Height), new Rectangle((int)gameClass.rocketList[i].bulletPos.X, (int)gameClass.rocketList[i].bulletPos.Y, gameClass.rocketList[i].bulletTexture.Width, gameClass.rocketList[i].bulletTexture.Height)))
                     {
-                        //gameClass.brilliant.Play();
-                        //gameClass.explosionSound.Play();
+                        gameClass.brilliant.Play();
+                        gameClass.explosionSound.Play();
 
                         gameClass.explosion.position = new Vector2(gameClass.bulletList[j].bulletPos.X, gameClass.bulletList[j].bulletPos.Y);
 
@@ -332,8 +332,8 @@ namespace AMON
             {
                 if (CheckCollision(planeLocation, new Rectangle((int)gameClass.rocketList[i].bulletPos.X, (int)gameClass.rocketList[i].bulletPos.Y, gameClass.rocketList[i].bulletTexture.Width, gameClass.rocketList[i].bulletTexture.Height)))
                 {
-                    //gameClass.brilliant.Play();
-                   // gameClass.explosionSound.Play();
+                    gameClass.brilliant.Play();
+                    gameClass.explosionSound.Play();
 
                     gameClass.explosion.position = new Vector2(gameClass.rocketList[i].bulletPos.X, gameClass.rocketList[i].bulletPos.Y);
                     if (!poweredUp)
@@ -358,7 +358,7 @@ namespace AMON
             {
                 if (CheckCollision(new Rectangle((int)gameClass.bulletList[j].bulletPos.X, (int)gameClass.bulletList[j].bulletPos.Y, gameClass.bulletList[j].bulletTexture.Width, gameClass.bulletList[j].bulletTexture.Height),planeLocation))
                 {
-                    //gameClass.explosionSound.Play();
+                    gameClass.explosionSound.Play();
 
                     gameClass.explosion.position = new Vector2(gameClass.bulletList[j].bulletPos.X, gameClass.bulletList[j].bulletPos.Y);
 
@@ -390,7 +390,7 @@ namespace AMON
             }
             else if ((keybState.IsKeyDown(Keys.Enter))&&!started)
             {
-               // gameClass.hateFalling.Play();
+                gameClass.hateFalling.Play();
                 started = true;
                 MediaPlayer.Volume = 5;
                 MediaPlayer.Play(gameClass.background1);
@@ -460,8 +460,8 @@ namespace AMON
                 if (poweredUp)
                 {
                     poweredUp = false;
-                   // gameClass.worseThanMySister.Play();
-                  //  gameClass.explosionSound.Play();
+                    gameClass.worseThanMySister.Play();
+                    gameClass.explosionSound.Play();
 
                     gameClass.explosion.position = new Vector2(charLocation.X, charLocation.Y);
 
@@ -474,7 +474,7 @@ namespace AMON
                 {
                     failed = true;
                     MediaPlayer.Stop();
-                   // gameClass.pathetic.Play();
+                    gameClass.pathetic.Play();
                 }
             }
         }
@@ -570,12 +570,12 @@ namespace AMON
 
         public void DrawGrenadeCooldown(SpriteBatch spriteBatch)
         {
-            //if((bulletTimer<100)&&(bulletTimer>0))
-                //spriteBatch.DrawString(font1,"Wait for bomb: "+Convert.ToString(100-bulletTimer),new Vector2(10,10),Color.White);
-            //else
-                //spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
+            /*if((bulletTimer<100)&&(bulletTimer>0))
+                spriteBatch.DrawString(font1,"Wait for bomb: "+Convert.ToString(100-bulletTimer),new Vector2(10,10),Color.White);
+            else
+                spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
 
-            //spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
+            spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);*/
         }
     }
 }

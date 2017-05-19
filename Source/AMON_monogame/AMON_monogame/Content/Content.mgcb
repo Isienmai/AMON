@@ -62,7 +62,7 @@
 
 #begin Nukes.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Nukes.mp3
 
@@ -314,73 +314,73 @@
 
 #begin Sounds/Brilliant.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Brilliant.mp3
 
 #begin Sounds/CrazySpeech.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/CrazySpeech.mp3
 
 #begin Sounds/Explosion.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Explosion.mp3
 
 #begin Sounds/HateFallingQuiet.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/HateFallingQuiet.mp3
 
 #begin Sounds/HateFallingShout.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/HateFallingShout.mp3
 
 #begin Sounds/HowLongUntilIWin.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/HowLongUntilIWin.mp3
 
 #begin Sounds/Pain.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Pain.mp3
 
 #begin Sounds/Pain1.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Pain1.mp3
 
 #begin Sounds/Pain2.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Pain2.mp3
 
 #begin Sounds/Pain3.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Pain3.mp3
 
 #begin Sounds/Pathetic.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/Pathetic.mp3
 
 #begin Sounds/WorseThanMySister.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/WorseThanMySister.mp3
 
