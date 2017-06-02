@@ -33,33 +33,7 @@ namespace AMON
 		int bulletTimer;
 		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer;
 
-		Game1 gameClass;
-
-		/*public void ResetGame()
-        {
-            playInstance++;
-            planeTimer = 0;
-            midwayPlayed = false;
-            timeElapsed = 0;
-            planeSpriteUsed = 0;
-            planeLocation = new Rectangle(-148, 200, 148, 38);
-            enemyRocketTimer = 100;
-            charLocation = new Rectangle(388, 10, 38, 46);
-            charColor = Color.White;
-            terminalVelocity = 5;
-            charVertSpeed = 2;
-            charHorizSpeed = 6;
-            scrolling1 = new Rectangle(0, 0, 800, 500);
-            scrolling2 = new Rectangle(0, 480, 800, 500);
-            started = false;
-            failed = false;
-            won = false;
-            InitialiseClouds();
-            for (int index = 0; index <= 3; index++)
-            {
-                cloudTextureIndex[index] = index;
-            }
-        }*/
+		Game1 gameClass;		
 
 		public void UpdatePainTimer()
 		{
@@ -76,16 +50,6 @@ namespace AMON
 
 		public void Initialise(Game1 game)
 		{
-			/*charImage = new Texture2D[2];
-            charFine = new Texture2D[2];
-            charNotFine = new Texture2D[2];
-            scrolling1Texture = new Texture2D[2];
-            scrolling2Texture = new Texture2D[2];
-            beginMessage = new Texture2D[2];
-            failureMessage = new Texture2D[2];
-            victoryMessage = new Texture2D[2];*/
-
-
 			timer = 0;
 			poweredUp = false;
 			powerUpLocation = new Rectangle(800, 480, 15, 20);
@@ -380,9 +344,10 @@ namespace AMON
 				((((input1.X + input1.Width > input2.X) && (input1.X < input2.X + input2.Width)) &&
 				((input1.Y + input1.Height > input2.Y) && (input1.Y < input2.Y + input2.Height))) ||
 				(((input1.X > input2.X) && (input1.X + input1.Width < input2.X + input2.Width)) &&
-				((input1.Y > input2.Y) && (input1.Y + input1.Height < input2.Y + input2.Height))))
-			   )
+				((input1.Y > input2.Y) && (input1.Y + input1.Height < input2.Y + input2.Height)))))
+			{
 				return true;
+			}
 			return false;
 		}
 
@@ -528,12 +493,12 @@ namespace AMON
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)
 		{
-			/*if((bulletTimer<100)&&(bulletTimer>0))
-                spriteBatch.DrawString(font1,"Wait for bomb: "+Convert.ToString(100-bulletTimer),new Vector2(10,10),Color.White);
-            else
-                spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
+			//if ((bulletTimer < 100) && (bulletTimer > 0))
+			//	spriteBatch.DrawString(font1, "Wait for bomb: " + Convert.ToString(100 - bulletTimer), new Vector2(10, 10), Color.White);
+			//else
+			//	spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
 
-            spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);*/
+			//spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
 		}
 	}
 }

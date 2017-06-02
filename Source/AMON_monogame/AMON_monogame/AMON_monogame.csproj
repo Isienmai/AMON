@@ -46,6 +46,7 @@
     <Compile Include="BaseClass.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Object.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
