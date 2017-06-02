@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
 namespace AMON
@@ -31,9 +31,8 @@ namespace AMON
 		public VideoPlayer player;
 		public Texture2D videoTexture;
 
-		public SoundEffect brilliant, speech, hateFalling, midway, pain1, pain2, pain3, pain4, pathetic, worseThanMySister, explosionSound, explosionSoud;
-		public Song background1;
-
+		public AudioManager theAudioManager;
+		
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
@@ -58,6 +57,8 @@ namespace AMON
 			bulletList = new List<Bullet>();
 			rocketList = new List<Bullet>();
 
+			theAudioManager = new AudioManager();
+
 			base.Initialize();
 		}
 
@@ -70,19 +71,7 @@ namespace AMON
 			// Create a new SpriteBatch, which can be used to draw textures.
 			//video1 = Content.Load<Video>("Nuke");
 
-			background1 = Content.Load<Song>("Super Street Fighter 2 - Guile's Stage");
-			brilliant = Content.Load<SoundEffect>("Sounds/Brilliant");
-			speech = Content.Load<SoundEffect>("Sounds/CrazySpeech");
-			hateFalling = Content.Load<SoundEffect>("Sounds/HateFallingShout");
-			midway = Content.Load<SoundEffect>("Sounds/HowLongUntilIWin");
-			pain1 = Content.Load<SoundEffect>("Sounds/Pain");
-			pain2 = Content.Load<SoundEffect>("Sounds/Pain1");
-			pain3 = Content.Load<SoundEffect>("Sounds/Pain2");
-			pain4 = Content.Load<SoundEffect>("Sounds/Pain3");
-			pathetic = Content.Load<SoundEffect>("Sounds/Pathetic");
-			worseThanMySister = Content.Load<SoundEffect>("Sounds/WorseThanMySister");
-			explosionSound = Content.Load<SoundEffect>("Sounds/Explosion");
-			explosionSoud = Content.Load<SoundEffect>("Nukes");
+			theAudioManager.LoadContent(Content);
 
 			startHere.planeImage[0] = Content.Load<Texture2D>("Images/plane");
 			startHere.planeImage[1] = Content.Load<Texture2D>("Images/Plane flipped");
@@ -277,7 +266,7 @@ namespace AMON
 					spriteBatch.Draw(videoTexture, screen, Color.White);
 					if (!finalNukePlayed)
 					{
-						explosionSoud.Play();
+						theAudioManager.PlayNukeSound();
 						finalNukePlayed = true;
 					}
 					bombTimer++;
