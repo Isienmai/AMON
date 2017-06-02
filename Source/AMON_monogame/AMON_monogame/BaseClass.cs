@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -33,7 +34,67 @@ namespace AMON
 		int bulletTimer;
 		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer;
 
-		Game1 gameClass;		
+		Game1 gameClass;
+
+		public void LoadContent(ContentManager Content)
+		{
+			planeImage[0] = Content.Load<Texture2D>("Images/plane");
+			planeImage[1] = Content.Load<Texture2D>("Images/Plane flipped");
+
+			powerUpImage = Content.Load<Texture2D>("Images/Shield");
+
+			castleImage = Content.Load<Texture2D>("Castle");
+
+			charFine = Content.Load<Texture2D>("Images/Parachute Midget");
+
+			charNotFine = Content.Load<Texture2D>("Images/Parachute midget damaged");
+
+			scrolling1Texture = Content.Load<Texture2D>("Images/Background11.fw");
+
+			scrolling2Texture = Content.Load<Texture2D>("Images/Background12.fw");
+
+			beginMessage = Content.Load<Texture2D>("Images/StartupMessage");
+
+			failureMessage = Content.Load<Texture2D>("Images/FailureMessage");
+
+			victoryMessage = Content.Load<Texture2D>("Images/VictoryMessage");
+
+			cloud[0] = Content.Load<Texture2D>("Images/Cloud2");
+			cloud[1] = Content.Load<Texture2D>("Images/Cloud2");
+			cloud[2] = Content.Load<Texture2D>("Images/Cloud4");
+			cloud[3] = Content.Load<Texture2D>("Images/Cloud4");
+		}
+
+		public void Tick(GameTime gameTime)
+		{
+			if (started) timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+			CheckAll();
+			UpdateAll();
+		}
+
+		public void Draw(SpriteBatch spriteBatch)
+		{
+			//draw background
+			spriteBatch.Draw(scrolling1Texture, scrolling1, Color.White);
+			spriteBatch.Draw(scrolling2Texture, scrolling2, Color.White);
+			spriteBatch.Draw(castleImage, CastleLocation, Color.White);
+
+			//draw character
+			spriteBatch.Draw(charImage, charLocation, charColor);
+
+			//draw plane
+			spriteBatch.Draw(planeImage[planeSpriteUsed], planeLocation, Color.White);
+
+			//draw clouds
+			DrawClouds(spriteBatch);
+
+			//draw powerup
+			spriteBatch.Draw(powerUpImage, powerUpLocation, Color.White);
+
+			//display grenade cooldown
+			DrawGrenadeCooldown(spriteBatch);
+		}
 
 		public void UpdatePainTimer()
 		{

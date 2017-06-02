@@ -47,11 +47,6 @@ namespace AMON_monogame
 			objectCollider.Y += (int)((float)velocity.Y * deltaTime);
 		}
 
-		public void Draw(SpriteBatch spriteBatch)
-		{
-			spriteBatch.Draw(sprite, objectCollider, Color.White);
-		}
-
 		public bool Collided(Object other)
 		{
 			//Check if the two rectangles overlap horizontally
@@ -69,6 +64,11 @@ namespace AMON_monogame
 			if (overallHeight > combinedHeight) return false;
 
 			return true;
+		}
+
+		public void Draw(SpriteBatch spriteBatch)
+		{
+			spriteBatch.Draw(sprite, objectCollider, Color.White);
 		}
 	}
 }
