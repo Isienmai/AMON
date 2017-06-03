@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,8 @@ namespace AMON
 {
 	class BaseClass
 	{
-		public Rectangle charLocation, scrolling1, scrolling2, planeLocation, CastleLocation, powerUpLocation;
+		private Rectangle charLocation, scrolling1, scrolling2, planeLocation, CastleLocation, powerUpLocation;
+		private Viewport viewport;
 		public Texture2D charImage, charFine, charNotFine, scrolling1Texture, scrolling2Texture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public Color charColor;
 		public int terminalVelocity, charVertSpeed, charHorizSpeed;
@@ -33,8 +35,64 @@ namespace AMON
 		int timer;
 		int bulletTimer;
 		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer;
+		
+		public Texture2D bulletTexture, rocketTexture;
+		public List<Bullet> bulletList, rocketList;
 
-		Game1 gameClass;
+		public Animation explosion;
+
+		private AudioManager audioManager;
+		
+		public BaseClass(Viewport viewSize, ref AudioManager mainAudioManager)
+		{
+			Initialise();
+
+			viewport = viewSize;
+			audioManager = mainAudioManager;
+		}
+
+		public void Initialise()
+		{
+			timer = 0;
+			poweredUp = false;
+			powerUpLocation = new Rectangle(800, 480, 15, 20);
+			CastleLocation = new Rectangle(0, 480, 800, 480);
+			playInstance = 0;
+			planeTimer = 0;
+			midwayPlayed = false;
+			timeElapsed = 0;
+			planeSpriteUsed = 0;
+			planeLocation = new Rectangle(-148, 200, 148, 38);
+			enemyRocketTimer = 100;
+			charLocation = new Rectangle(388, 10, 38, 46);
+			charColor = Color.White;
+			terminalVelocity = 5;
+			charVertSpeed = 3;
+			charHorizSpeed = 7;
+			scrolling1 = new Rectangle(0, 0, 800, 500);
+			scrolling2 = new Rectangle(0, 480, 800, 500);
+			started = false;
+			failed = false;
+			won = false;
+
+			InitialiseClouds();
+
+			bulletList = new List<Bullet>();
+			rocketList = new List<Bullet>();
+		}
+
+		public void InitialiseClouds()
+		{
+			for (int index = 0; index <= cloudNumber - 1; index++)
+			{
+				testCloud[index] = new Rectangle(0, index * 10000, 0, 0);
+			}
+
+			for (int index = 0; index <= 3; index++)
+			{
+				cloudTextureIndex[index] = index;
+			}
+		}
 
 		public void LoadContent(ContentManager Content)
 		{
@@ -63,14 +121,21 @@ namespace AMON
 			cloud[1] = Content.Load<Texture2D>("Images/Cloud2");
 			cloud[2] = Content.Load<Texture2D>("Images/Cloud4");
 			cloud[3] = Content.Load<Texture2D>("Images/Cloud4");
+
+			bulletTexture = Content.Load<Texture2D>("Images/Bomb");
+			rocketTexture = Content.Load<Texture2D>("Images/Rocket");
+
+			explosion = new Animation(Content.Load<Texture2D>("Explosdi"), new Vector2(96, 32), 32, 32);
 		}
 
 		public void Tick(GameTime gameTime)
 		{
 			if (started) timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+			
 			CheckAll();
 			UpdateAll();
+
+			explosion.Update(gameTime);
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
@@ -92,52 +157,33 @@ namespace AMON
 			//draw powerup
 			spriteBatch.Draw(powerUpImage, powerUpLocation, Color.White);
 
+			//draw bullets
+			for (int i = 0; i < bulletList.Count; i++)
+			{
+				bulletList[i].Draw(spriteBatch, bulletTexture, Color.White);
+			}
+
+			//draw rockets
+			for (int i = 0; i < rocketList.Count; i++)
+			{
+				rocketList[i].Draw(spriteBatch, rocketTexture, Color.White);
+				rocketList[i].Draw(spriteBatch, rocketTexture, Color.Gray * 0.2f);
+			}
+
+			//draw small explosion
+			if (explosionTimer > 0)
+			{
+				explosion.Draw(spriteBatch);
+				explosionTimer--;
+			}
+
 			//display grenade cooldown
 			DrawGrenadeCooldown(spriteBatch);
 		}
-
+				
 		public void UpdatePainTimer()
 		{
 			if (painTimer > 0) painTimer--;
-		}
-
-		public void InitialiseClouds()
-		{
-			for (int index = 0; index <= cloudNumber - 1; index++)
-			{
-				testCloud[index] = new Rectangle(0, index * 10000, 0, 0);
-			}
-		}
-
-		public void Initialise(Game1 game)
-		{
-			timer = 0;
-			poweredUp = false;
-			powerUpLocation = new Rectangle(800, 480, 15, 20);
-			CastleLocation = new Rectangle(0, 480, 800, 480);
-			playInstance = 0;
-			planeTimer = 0;
-			midwayPlayed = false;
-			timeElapsed = 0;
-			planeSpriteUsed = 0;
-			planeLocation = new Rectangle(-148, 200, 148, 38);
-			enemyRocketTimer = 100;
-			charLocation = new Rectangle(388, 10, 38, 46);
-			charColor = Color.White;
-			terminalVelocity = 5;
-			charVertSpeed = 3;
-			charHorizSpeed = 7;
-			scrolling1 = new Rectangle(0, 0, 800, 500);
-			scrolling2 = new Rectangle(0, 480, 800, 500);
-			started = false;
-			failed = false;
-			won = false;
-			InitialiseClouds();
-			gameClass = game;
-			for (int index = 0; index <= 3; index++)
-			{
-				cloudTextureIndex[index] = index;
-			}
 		}
 
 		public void CheckTime()
@@ -145,22 +191,20 @@ namespace AMON
 			if ((timeElapsed > 60f) && !failed)
 			{
 				won = true;
-				gameClass.theAudioManager.StopBackgroundMusic();
-				gameClass.theAudioManager.PlaySpeech();
+				audioManager.StopBackgroundMusic();
+				audioManager.PlaySpeech();
 				timeElapsed = 0;
 			}
 
 			if ((timeElapsed > 30f) && (!midwayPlayed))
 			{
-				gameClass.theAudioManager.PlayMidway();
+				audioManager.PlayMidway();
 				midwayPlayed = true;
 			}
 		}
 
 		public void CheckAll()
 		{
-			CheckInput();
-
 			if (!failed && !won)
 			{
 				CheckPowerUpCollision();
@@ -196,8 +240,30 @@ namespace AMON
 				UpdateCloud();
 				if (timeElapsed > 10f) UpdateEnemyRocket();
 				UpdatePlane();
+
+				//update the bullets
+				for (int i = 0; i < bulletList.Count; i++)
+				{
+					bulletList[i].BulletUpdate(5);
+
+					if (bulletList[i].bulletPos.Y > viewport.Height)
+					{
+						bulletList.Remove(bulletList[i]);
+					}
+				}
+
+				//update the rockets
+				for (int i = 0; i < rocketList.Count; i++)
+				{
+					rocketList[i].BulletUpdate(-1 * (terminalVelocity + 5));
+					if (rocketList[i].bulletPos.Y < 0 - rocketList[i].bulletTexture.Height)
+					{
+						rocketList.Remove(rocketList[i]);
+					}
+				}
+
+				if (bulletTimer <= 100) bulletTimer++;
 			}
-			if (bulletTimer <= 100) bulletTimer++;
 		}
 
 		public void UpdatePlane()
@@ -254,37 +320,37 @@ namespace AMON
 		public void LaunchEnemyRocket()
 		{
 			Bullet bulletInst = new Bullet();
-			bulletInst.BulletCreate(new Rectangle(charLocation.X, 500, 8000, 6000), gameClass.rocketTexture);
-			gameClass.rocketList.Add(bulletInst);
+			bulletInst.BulletCreate(new Rectangle(charLocation.X, 500, 8000, 6000), rocketTexture);
+			rocketList.Add(bulletInst);
 			bulletInst = null;
 		}
 
 		public void CheckCharRocketCollision()
 		{
-			for (int i = 0; i < gameClass.rocketList.Count; i++)
+			for (int i = 0; i < rocketList.Count; i++)
 			{
-				if (CheckCollision(charLocation, new Rectangle((int)gameClass.rocketList[i].bulletPos.X, (int)gameClass.rocketList[i].bulletPos.Y, gameClass.rocketList[i].bulletTexture.Width, gameClass.rocketList[i].bulletTexture.Height)))
+				if (CheckCollision(charLocation, new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
 				{
 					if (poweredUp)
 					{
 						poweredUp = false;
 
-						gameClass.theAudioManager.PlayWorseThanMySister();
-						gameClass.theAudioManager.PlayExplosion();
+						audioManager.PlayWorseThanMySister();
+						audioManager.PlayExplosion();
 
-						gameClass.explosion.position = new Vector2(charLocation.X, charLocation.Y);
+						explosion.position = new Vector2(charLocation.X, charLocation.Y);
 
 						explosionTimer = 25;
-						gameClass.rocketList.Remove(gameClass.rocketList[i]);
+						rocketList.Remove(rocketList[i]);
 
 					}
 					else
 					{
 						failed = true;
 						MediaPlayer.Stop();
-						gameClass.theAudioManager.PlayPathetic();
+						audioManager.PlayPathetic();
 						timeElapsed = -100f;
-						gameClass.theAudioManager.PlayExplosion();
+						audioManager.PlayExplosion();
 					}
 				}
 			}
@@ -292,20 +358,20 @@ namespace AMON
 
 		public void CheckBombRocketCollision()
 		{
-			for (int j = 0; j < gameClass.bulletList.Count; j++)
+			for (int j = 0; j < bulletList.Count; j++)
 			{
-				for (int i = 0; i < gameClass.rocketList.Count; i++)
+				for (int i = 0; i < rocketList.Count; i++)
 				{
-					if (CheckCollision(new Rectangle((int)gameClass.bulletList[j].bulletPos.X, (int)gameClass.bulletList[j].bulletPos.Y, gameClass.bulletList[j].bulletTexture.Width, gameClass.bulletList[j].bulletTexture.Height), new Rectangle((int)gameClass.rocketList[i].bulletPos.X, (int)gameClass.rocketList[i].bulletPos.Y, gameClass.rocketList[i].bulletTexture.Width, gameClass.rocketList[i].bulletTexture.Height)))
+					if (CheckCollision(new Rectangle((int)bulletList[j].bulletPos.X, (int)bulletList[j].bulletPos.Y, bulletList[j].bulletTexture.Width, bulletList[j].bulletTexture.Height), new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
 					{
-						gameClass.theAudioManager.PlayBrilliant();
-						gameClass.theAudioManager.PlayExplosion();
+						audioManager.PlayBrilliant();
+						audioManager.PlayExplosion();
 
-						gameClass.explosion.position = new Vector2(gameClass.bulletList[j].bulletPos.X, gameClass.bulletList[j].bulletPos.Y);
+						explosion.position = new Vector2(bulletList[j].bulletPos.X, bulletList[j].bulletPos.Y);
 
 						explosionTimer = 25;
-						gameClass.rocketList.Remove(gameClass.rocketList[i]);
-						gameClass.bulletList.Remove(gameClass.bulletList[j]);
+						rocketList.Remove(rocketList[i]);
+						bulletList.Remove(bulletList[j]);
 					}
 				}
 			}
@@ -313,23 +379,23 @@ namespace AMON
 
 		public void CheckPlaneRocketCollision()
 		{
-			for (int i = 0; i < gameClass.rocketList.Count; i++)
+			for (int i = 0; i < rocketList.Count; i++)
 			{
-				if (CheckCollision(planeLocation, new Rectangle((int)gameClass.rocketList[i].bulletPos.X, (int)gameClass.rocketList[i].bulletPos.Y, gameClass.rocketList[i].bulletTexture.Width, gameClass.rocketList[i].bulletTexture.Height)))
+				if (CheckCollision(planeLocation, new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
 				{
-					gameClass.theAudioManager.PlayBrilliant();
-					gameClass.theAudioManager.PlayExplosion();
+					audioManager.PlayBrilliant();
+					audioManager.PlayExplosion();
 
-					gameClass.explosion.position = new Vector2(gameClass.rocketList[i].bulletPos.X, gameClass.rocketList[i].bulletPos.Y);
+					explosion.position = new Vector2(rocketList[i].bulletPos.X, rocketList[i].bulletPos.Y);
 					if (!poweredUp)
 					{
-						powerUpLocation.X = (int)gameClass.rocketList[i].bulletPos.X;
-						powerUpLocation.Y = (int)gameClass.rocketList[i].bulletPos.Y;
+						powerUpLocation.X = (int)rocketList[i].bulletPos.X;
+						powerUpLocation.Y = (int)rocketList[i].bulletPos.Y;
 					}
 
 
 					explosionTimer = 25;
-					gameClass.rocketList.Remove(gameClass.rocketList[i]);
+					rocketList.Remove(rocketList[i]);
 
 					if (planeSpriteUsed == 0) planeLocation.X = 800;
 					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
@@ -339,23 +405,23 @@ namespace AMON
 
 		public void CheckBombPlaneCollision()
 		{
-			for (int j = 0; j < gameClass.bulletList.Count; j++)
+			for (int j = 0; j < bulletList.Count; j++)
 			{
-				if (CheckCollision(new Rectangle((int)gameClass.bulletList[j].bulletPos.X, (int)gameClass.bulletList[j].bulletPos.Y, gameClass.bulletList[j].bulletTexture.Width, gameClass.bulletList[j].bulletTexture.Height), planeLocation))
+				if (CheckCollision(new Rectangle((int)bulletList[j].bulletPos.X, (int)bulletList[j].bulletPos.Y, bulletList[j].bulletTexture.Width, bulletList[j].bulletTexture.Height), planeLocation))
 				{
-					gameClass.theAudioManager.PlayExplosion();
+					audioManager.PlayExplosion();
 
-					gameClass.explosion.position = new Vector2(gameClass.bulletList[j].bulletPos.X, gameClass.bulletList[j].bulletPos.Y);
+					explosion.position = new Vector2(bulletList[j].bulletPos.X, bulletList[j].bulletPos.Y);
 
 					explosionTimer = 25;
 					if (planeSpriteUsed == 0) planeLocation.X = 800;
 					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
-					gameClass.bulletList.Remove(gameClass.bulletList[j]);
+					bulletList.Remove(bulletList[j]);
 				}
 			}
 		}
 
-		public void CheckInput()
+		public int CheckInput()
 		{
 			KeyboardState keybState = Keyboard.GetState();
 			if (started && !failed)
@@ -368,22 +434,23 @@ namespace AMON
 				{
 					bulletTimer = 0;
 					Bullet bulletInst = new Bullet();
-					bulletInst.BulletCreate(new Rectangle(charLocation.X + 10, charLocation.Y + 40, 0, 0), gameClass.bulletTexture);
-					gameClass.bulletList.Add(bulletInst);
+					bulletInst.BulletCreate(new Rectangle(charLocation.X + 10, charLocation.Y + 40, 0, 0), bulletTexture);
+					bulletList.Add(bulletInst);
 					bulletInst = null;
 				}
 			}
 			else if ((keybState.IsKeyDown(Keys.Enter)) && !started)
 			{
-				gameClass.theAudioManager.PlayHateFalling();
+				audioManager.PlayHateFalling();
 				started = true;
-				gameClass.theAudioManager.StartBackgroundMusic();
+				audioManager.StartBackgroundMusic();
 			}
 
-			if ((keybState.IsKeyDown(Keys.Back)) && ((failed) || (won))) gameClass.Exit();
-			if ((keybState.IsKeyDown(Keys.Enter)) && ((failed) || (won))) Initialise(gameClass);
+			if (keybState.IsKeyDown(Keys.Escape)) return 1;
+			if ((keybState.IsKeyDown(Keys.Back)) && ((failed) || (won))) return 1;
+			if ((keybState.IsKeyDown(Keys.Enter)) && ((failed) || (won))) Initialise();
 
-			//if ((keybState.IsKeyDown(Keys.Back)) && (won)) ResetGame();
+			return 0;
 		}
 
 		public void CheckWallCollision()
@@ -429,7 +496,7 @@ namespace AMON
 
 						if (painTimer == 0)
 						{
-							gameClass.theAudioManager.PlayRandomPain();
+							audioManager.PlayRandomPain();
 							painTimer = 20;
 						}
 					}
@@ -444,10 +511,10 @@ namespace AMON
 				if (poweredUp)
 				{
 					poweredUp = false;
-					gameClass.theAudioManager.PlayWorseThanMySister();
-					gameClass.theAudioManager.PlayExplosion();
+					audioManager.PlayWorseThanMySister();
+					audioManager.PlayExplosion();
 
-					gameClass.explosion.position = new Vector2(charLocation.X, charLocation.Y);
+					explosion.position = new Vector2(charLocation.X, charLocation.Y);
 
 					explosionTimer = 25;
 					if (planeSpriteUsed == 0) planeLocation.X = 800;
@@ -457,8 +524,8 @@ namespace AMON
 				else
 				{
 					failed = true;
-					gameClass.theAudioManager.StopBackgroundMusic();
-					gameClass.theAudioManager.PlayPathetic();
+					audioManager.StopBackgroundMusic();
+					audioManager.PlayPathetic();
 				}
 			}
 		}

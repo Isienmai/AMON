@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -16,14 +14,8 @@ namespace AMON
 		SpriteBatch spriteBatch;
 
 		BaseClass coreGameClass;
-
-		int bombTimer = 0;
-
-		public Animation explosion;
-
-		public Texture2D bulletTexture, rocketTexture;
-		public List<Bullet> bulletList, rocketList;
-
+		
+		int bombTimer;
 		bool bombPlayed = false;
 		bool finalNukePlayed = false;
 
@@ -46,15 +38,12 @@ namespace AMON
 		/// </summary>
 		protected override void Initialize()
 		{
-			coreGameClass = new BaseClass();
-			coreGameClass.Initialise(this);
-			
-			theVideoPlayer = new VideoPlayer();
-
-			bulletList = new List<Bullet>();
-			rocketList = new List<Bullet>();
-
+			theVideoPlayer = new VideoPlayer();			
 			theAudioManager = new AudioManager();
+
+			coreGameClass = new BaseClass(GraphicsDevice.Viewport, ref theAudioManager);
+			
+			bombTimer = 0;
 
 			base.Initialize();
 		}
@@ -76,10 +65,6 @@ namespace AMON
 			coreGameClass.LoadContent(Content);
 
 			//startHere.font1 = Content.Load<SpriteFont>("SpriteFont1");
-			bulletTexture = Content.Load<Texture2D>("Images/Bomb");
-			rocketTexture = Content.Load<Texture2D>("Images/Rocket");
-
-			explosion = new Animation(Content.Load<Texture2D>("Explosdi"), new Vector2(96, 32), 32, 32);
 		}
 
 		/// <summary>
@@ -99,13 +84,8 @@ namespace AMON
 		protected override void Update(GameTime gameTime)
 		{
 			//Exit the game if requested
-			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
-
-			if ((!coreGameClass.won) && (bombTimer != 0))
-			{
-				bombTimer = 0;
-			}
-
+			if (coreGameClass.CheckInput() == 1) Exit();
+			
 			coreGameClass.Tick(gameTime);
 
 			if ((!bombPlayed) && (coreGameClass.won))
@@ -113,29 +93,6 @@ namespace AMON
 				theVideoPlayer.IsLooped = true;
 				//player.Play(video1);
 				bombPlayed = true;
-			}
-
-			explosion.Update(gameTime);
-
-			//update the bullets
-			for (int i = 0; i < bulletList.Count; i++)
-			{
-				bulletList[i].BulletUpdate(5);
-
-				if (bulletList[i].bulletPos.Y > GraphicsDevice.Viewport.Height)
-				{
-					bulletList.Remove(bulletList[i]);
-				}
-			}
-
-			//update the rockets
-			for (int i = 0; i < rocketList.Count; i++)
-			{
-				rocketList[i].BulletUpdate(-1 * (coreGameClass.terminalVelocity + 5));
-				if (rocketList[i].bulletPos.Y < 0 - rocketList[i].bulletTexture.Height)
-				{
-					rocketList.Remove(rocketList[i]);
-				}
 			}
 
 			//most innefficient botched attempt at bug-fixing ever attempted by mankind.
@@ -159,26 +116,6 @@ namespace AMON
 			spriteBatch.Begin();
 
 			coreGameClass.Draw(spriteBatch);
-
-			//draw bullets
-			for (int i = 0; i < bulletList.Count; i++)
-			{
-				bulletList[i].Draw(spriteBatch, bulletTexture, Color.White);
-			}
-
-			//draw rockets
-			for (int i = 0; i < rocketList.Count; i++)
-			{
-				rocketList[i].Draw(spriteBatch, rocketTexture, Color.White);
-				rocketList[i].Draw(spriteBatch, rocketTexture, Color.Gray * 0.2f);
-			}
-			
-			//draw small explosion
-			if (coreGameClass.explosionTimer > 0)
-			{
-				explosion.Draw(spriteBatch);
-				coreGameClass.explosionTimer--;
-			}
 
 			//draw titlescreen
 			if (!coreGameClass.started) spriteBatch.Draw(coreGameClass.beginMessage, new Rectangle(0, 0, 800, 480), Color.White);
