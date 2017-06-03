@@ -46,7 +46,10 @@
     <Compile Include="BaseClass.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Object.cs" />
+    <Compile Include="PlayerCharacter.cs" />
+    <Compile Include="Powerup.cs" />
+    <Compile Include="Projectiles.cs" />
+    <Compile Include="PhysicalObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

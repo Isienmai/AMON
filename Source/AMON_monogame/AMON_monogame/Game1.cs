@@ -63,6 +63,7 @@ namespace AMON
 			theAudioManager.LoadContent(Content);
 			//Load the game's sprites
 			coreGameClass.LoadContent(Content);
+			coreGameClass.Initialise();
 
 			//startHere.font1 = Content.Load<SpriteFont>("SpriteFont1");
 		}

@@ -10,11 +10,10 @@ namespace AMON
 {
 	class BaseClass
 	{
-		private Rectangle charLocation, scrolling1, scrolling2, planeLocation, CastleLocation, powerUpLocation;
-		private Viewport viewport;
-		public Texture2D charImage, charFine, charNotFine, scrolling1Texture, scrolling2Texture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
+		private Rectangle scrolling1, scrolling2, planeLocation, CastleLocation;
+		public Texture2D charFine, charNotFine, scrolling1Texture, scrolling2Texture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public Color charColor;
-		public int terminalVelocity, charVertSpeed, charHorizSpeed;
+		public int terminalVelocity;
 		public bool started, failed, won, midwayPlayed;
 		//public SpriteFont font1;
 		public int playInstance;
@@ -33,29 +32,33 @@ namespace AMON
 
 
 		int timer;
-		int bulletTimer;
-		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer;
-		
-		public Texture2D bulletTexture, rocketTexture;
-		public List<Bullet> bulletList, rocketList;
+		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer;		
 
 		public Animation explosion;
 
+
+
+		public Texture2D grenadeTexture, rocketTexture;
+
 		private AudioManager audioManager;
-		
+
+		private List<PhysicalObject> allObjects;
+		private Viewport viewport;
+
+		private PlayerCharacter thePlayer;
+
 		public BaseClass(Viewport viewSize, ref AudioManager mainAudioManager)
 		{
-			Initialise();
-
 			viewport = viewSize;
 			audioManager = mainAudioManager;
 		}
 
 		public void Initialise()
 		{
+			allObjects = new List<PhysicalObject>();
+
 			timer = 0;
 			poweredUp = false;
-			powerUpLocation = new Rectangle(800, 480, 15, 20);
 			CastleLocation = new Rectangle(0, 480, 800, 480);
 			playInstance = 0;
 			planeTimer = 0;
@@ -64,11 +67,12 @@ namespace AMON
 			planeSpriteUsed = 0;
 			planeLocation = new Rectangle(-148, 200, 148, 38);
 			enemyRocketTimer = 100;
-			charLocation = new Rectangle(388, 10, 38, 46);
+
+			thePlayer = new PlayerCharacter(new Vector2(388, 10), charFine);
+			allObjects.Add(thePlayer);
+
 			charColor = Color.White;
 			terminalVelocity = 5;
-			charVertSpeed = 3;
-			charHorizSpeed = 7;
 			scrolling1 = new Rectangle(0, 0, 800, 500);
 			scrolling2 = new Rectangle(0, 480, 800, 500);
 			started = false;
@@ -77,8 +81,6 @@ namespace AMON
 
 			InitialiseClouds();
 
-			bulletList = new List<Bullet>();
-			rocketList = new List<Bullet>();
 		}
 
 		public void InitialiseClouds()
@@ -122,7 +124,7 @@ namespace AMON
 			cloud[2] = Content.Load<Texture2D>("Images/Cloud4");
 			cloud[3] = Content.Load<Texture2D>("Images/Cloud4");
 
-			bulletTexture = Content.Load<Texture2D>("Images/Bomb");
+			grenadeTexture = Content.Load<Texture2D>("Images/Bomb");
 			rocketTexture = Content.Load<Texture2D>("Images/Rocket");
 
 			explosion = new Animation(Content.Load<Texture2D>("Explosdi"), new Vector2(96, 32), 32, 32);
@@ -135,6 +137,11 @@ namespace AMON
 			CheckAll();
 			UpdateAll();
 
+			for (int i = 0; i < allObjects.Count; ++i)
+			{
+				allObjects[i].Tick((float)gameTime.ElapsedGameTime.Milliseconds * 0.001f);
+			}
+
 			explosion.Update(gameTime);
 		}
 
@@ -144,30 +151,16 @@ namespace AMON
 			spriteBatch.Draw(scrolling1Texture, scrolling1, Color.White);
 			spriteBatch.Draw(scrolling2Texture, scrolling2, Color.White);
 			spriteBatch.Draw(castleImage, CastleLocation, Color.White);
-
-			//draw character
-			spriteBatch.Draw(charImage, charLocation, charColor);
-
+			
 			//draw plane
 			spriteBatch.Draw(planeImage[planeSpriteUsed], planeLocation, Color.White);
 
 			//draw clouds
 			DrawClouds(spriteBatch);
 
-			//draw powerup
-			spriteBatch.Draw(powerUpImage, powerUpLocation, Color.White);
-
-			//draw bullets
-			for (int i = 0; i < bulletList.Count; i++)
+			for(int i = 0; i < allObjects.Count; ++i)
 			{
-				bulletList[i].Draw(spriteBatch, bulletTexture, Color.White);
-			}
-
-			//draw rockets
-			for (int i = 0; i < rocketList.Count; i++)
-			{
-				rocketList[i].Draw(spriteBatch, rocketTexture, Color.White);
-				rocketList[i].Draw(spriteBatch, rocketTexture, Color.Gray * 0.2f);
+				allObjects[i].Draw(spriteBatch);
 			}
 
 			//draw small explosion
@@ -180,27 +173,79 @@ namespace AMON
 			//display grenade cooldown
 			DrawGrenadeCooldown(spriteBatch);
 		}
-				
+
+		public void UpdateAll()
+		{
+			if (started && !failed && !won)
+			{
+				UpdateCastle();
+				UpdatePainTimer();
+				UpdateBackground();
+				UpdateCloud();
+				if (timeElapsed > 10f) UpdateEnemyRocket();
+				UpdatePlane();
+			}
+		}
+
+		public void UpdateCastle()
+		{
+			if ((timeElapsed > 59) && (CastleLocation.Y > 10))
+			{
+				CastleLocation.Y -= terminalVelocity;
+			}
+			//if (!(CastleLocation.Y > 10)) charLocation.Y += terminalVelocity;
+		}
+
 		public void UpdatePainTimer()
 		{
 			if (painTimer > 0) painTimer--;
 		}
 
-		public void CheckTime()
+		public void UpdatePlane()
 		{
-			if ((timeElapsed > 60f) && !failed)
+			if (timeElapsed > 25)
 			{
-				won = true;
-				audioManager.StopBackgroundMusic();
-				audioManager.PlaySpeech();
-				timeElapsed = 0;
+				if ((planeSpriteUsed == 0) && (planeTimer == 0)) planeLocation.X += 7;
+				if ((planeSpriteUsed == 1) && (planeTimer == 0)) planeLocation.X -= 7;
 			}
+		}
+		
+		public void UpdateEnemyRocket()
+		{
+			if (enemyRocketTimer == 0)
+			{
 
-			if ((timeElapsed > 30f) && (!midwayPlayed))
-			{
-				audioManager.PlayMidway();
-				midwayPlayed = true;
+				if (timeElapsed < 35) enemyRocketTimer = 100;
+				else
+				if (timeElapsed < 45) enemyRocketTimer = 80;
+				else
+				if (timeElapsed < 55) enemyRocketTimer = 60;
+				else enemyRocketTimer = 40;
+
+				allObjects.Add(new Missile(new Vector2(thePlayer.GetCentre().X, 500), rocketTexture));
 			}
+			else enemyRocketTimer--;
+		}
+
+		public void RandomizeCloud(int index)
+		{
+			Random randX, randY, randHeight, randWidth, randImage;
+			int baseSeed = (int)DateTime.Now.Ticks;
+
+			randHeight = new Random(baseSeed + 3 * (index + 1));
+			randWidth = new Random(baseSeed + 4 * (index + 1));
+			randX = new Random(baseSeed + (index + 1));
+			randY = new Random(baseSeed + 2 * (index + 1));
+			randImage = new Random(baseSeed * index);
+
+			int newHeight = randHeight.Next(100, 300);
+			int newWidth = randWidth.Next(150, 500);
+			int newX = randX.Next(0, 800 - newWidth);
+			int newY = randY.Next(480, 700);
+			//cloudTextureIndex[index] = randImage.Next(0,3);
+			cloudTextureIndex[index]++;
+			if (cloudTextureIndex[index] > 3) cloudTextureIndex[index] -= 3;
+			testCloud[index] = new Rectangle(newX, newY, newWidth, newHeight);
 		}
 
 		public void CheckAll()
@@ -221,57 +266,20 @@ namespace AMON
 			}
 		}
 
-		public void UpdateCastle()
+		public void CheckTime()
 		{
-			if ((timeElapsed > 59) && (CastleLocation.Y > 10))
+			if ((timeElapsed > 60f) && !failed)
 			{
-				CastleLocation.Y -= terminalVelocity;
+				won = true;
+				audioManager.StopBackgroundMusic();
+				audioManager.PlaySpeech();
+				timeElapsed = 0;
 			}
-			if (!(CastleLocation.Y > 10)) charLocation.Y += terminalVelocity;
-		}
 
-		public void UpdateAll()
-		{
-			if (started && !failed && !won)
+			if ((timeElapsed > 30f) && (!midwayPlayed))
 			{
-				UpdateCastle();
-				UpdatePainTimer();
-				UpdateBackground();
-				UpdateCloud();
-				if (timeElapsed > 10f) UpdateEnemyRocket();
-				UpdatePlane();
-
-				//update the bullets
-				for (int i = 0; i < bulletList.Count; i++)
-				{
-					bulletList[i].BulletUpdate(5);
-
-					if (bulletList[i].bulletPos.Y > viewport.Height)
-					{
-						bulletList.Remove(bulletList[i]);
-					}
-				}
-
-				//update the rockets
-				for (int i = 0; i < rocketList.Count; i++)
-				{
-					rocketList[i].BulletUpdate(-1 * (terminalVelocity + 5));
-					if (rocketList[i].bulletPos.Y < 0 - rocketList[i].bulletTexture.Height)
-					{
-						rocketList.Remove(rocketList[i]);
-					}
-				}
-
-				if (bulletTimer <= 100) bulletTimer++;
-			}
-		}
-
-		public void UpdatePlane()
-		{
-			if (timeElapsed > 25)
-			{
-				if ((planeSpriteUsed == 0) && (planeTimer == 0)) planeLocation.X += 7;
-				if ((planeSpriteUsed == 1) && (planeTimer == 0)) planeLocation.X -= 7;
+				audioManager.PlayMidway();
+				midwayPlayed = true;
 			}
 		}
 
@@ -280,7 +288,7 @@ namespace AMON
 			if (planeLocation.X > 800)
 			{
 				planeSpriteUsed = 1;
-				planeLocation.Y = charLocation.Y;
+				planeLocation.Y = (int)thePlayer.GetCentre().Y;
 				planeLocation.X = 800;
 				if (timeElapsed < 30) planeTimer = 150;
 				else
@@ -290,7 +298,7 @@ namespace AMON
 			if (planeLocation.X < -148)
 			{
 				planeSpriteUsed = 0;
-				planeLocation.Y = charLocation.Y;
+				planeLocation.Y = (int)thePlayer.GetCentre().Y;
 				planeLocation.X = -148;
 				if (timeElapsed < 30) planeTimer = 150;
 				else
@@ -301,33 +309,9 @@ namespace AMON
 			if (planeTimer != 0) planeTimer--;
 		}
 
-		public void UpdateEnemyRocket()
-		{
-			if (enemyRocketTimer == 0)
-			{
-
-				if (timeElapsed < 35) enemyRocketTimer = 100;
-				else
-				if (timeElapsed < 45) enemyRocketTimer = 80;
-				else
-				if (timeElapsed < 55) enemyRocketTimer = 60;
-				else enemyRocketTimer = 40;
-				LaunchEnemyRocket();
-			}
-			else enemyRocketTimer--;
-		}
-
-		public void LaunchEnemyRocket()
-		{
-			Bullet bulletInst = new Bullet();
-			bulletInst.BulletCreate(new Rectangle(charLocation.X, 500, 8000, 6000), rocketTexture);
-			rocketList.Add(bulletInst);
-			bulletInst = null;
-		}
-
 		public void CheckCharRocketCollision()
 		{
-			for (int i = 0; i < rocketList.Count; i++)
+			/*for (int i = 0; i < rocketList.Count; i++)
 			{
 				if (CheckCollision(charLocation, new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
 				{
@@ -353,12 +337,12 @@ namespace AMON
 						audioManager.PlayExplosion();
 					}
 				}
-			}
+			}*/
 		}
 
 		public void CheckBombRocketCollision()
 		{
-			for (int j = 0; j < bulletList.Count; j++)
+			/*for (int j = 0; j < bulletList.Count; j++)
 			{
 				for (int i = 0; i < rocketList.Count; i++)
 				{
@@ -374,12 +358,12 @@ namespace AMON
 						bulletList.Remove(bulletList[j]);
 					}
 				}
-			}
+			}*/
 		}
 
 		public void CheckPlaneRocketCollision()
 		{
-			for (int i = 0; i < rocketList.Count; i++)
+			/*for (int i = 0; i < rocketList.Count; i++)
 			{
 				if (CheckCollision(planeLocation, new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
 				{
@@ -400,12 +384,12 @@ namespace AMON
 					if (planeSpriteUsed == 0) planeLocation.X = 800;
 					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
 				}
-			}
+			}*/
 		}
 
 		public void CheckBombPlaneCollision()
 		{
-			for (int j = 0; j < bulletList.Count; j++)
+			/*for (int j = 0; j < bulletList.Count; j++)
 			{
 				if (CheckCollision(new Rectangle((int)bulletList[j].bulletPos.X, (int)bulletList[j].bulletPos.Y, bulletList[j].bulletTexture.Width, bulletList[j].bulletTexture.Height), planeLocation))
 				{
@@ -418,7 +402,7 @@ namespace AMON
 					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
 					bulletList.Remove(bulletList[j]);
 				}
-			}
+			}*/
 		}
 
 		public int CheckInput()
@@ -426,18 +410,15 @@ namespace AMON
 			KeyboardState keybState = Keyboard.GetState();
 			if (started && !failed)
 			{
-				if (keybState.IsKeyDown(Keys.Up)) charLocation.Y -= charVertSpeed;
-				if (keybState.IsKeyDown(Keys.Down)) charLocation.Y += charVertSpeed;
-				if (keybState.IsKeyDown(Keys.Left)) charLocation.X -= charHorizSpeed;
-				if (keybState.IsKeyDown(Keys.Right)) charLocation.X += charHorizSpeed;
-				if (keybState.IsKeyDown(Keys.Space) && bulletTimer > 100)
-				{
-					bulletTimer = 0;
-					Bullet bulletInst = new Bullet();
-					bulletInst.BulletCreate(new Rectangle(charLocation.X + 10, charLocation.Y + 40, 0, 0), bulletTexture);
-					bulletList.Add(bulletInst);
-					bulletInst = null;
-				}
+				int horizMotion = 0, verticMotion = 0;
+				if (keybState.IsKeyDown(Keys.Up)) verticMotion -= 1;
+				if (keybState.IsKeyDown(Keys.Down)) verticMotion += 1;
+				if (keybState.IsKeyDown(Keys.Left)) horizMotion -= 1;
+				if (keybState.IsKeyDown(Keys.Right)) horizMotion += 1;
+
+				thePlayer.MovePlayer(horizMotion, verticMotion);
+
+				if (keybState.IsKeyDown(Keys.Space)) thePlayer.DropGrenade();
 			}
 			else if ((keybState.IsKeyDown(Keys.Enter)) && !started)
 			{
@@ -455,10 +436,10 @@ namespace AMON
 
 		public void CheckWallCollision()
 		{
-			if (charLocation.X < 0) charLocation.X = 0;
+			/*if (charLocation.X < 0) charLocation.X = 0;
 			if (charLocation.X + charLocation.Width > 800) charLocation.X = (800 - charLocation.Width);
 			if (charLocation.Y < 0) charLocation.Y = 0;
-			if (charLocation.Y + charLocation.Height > 480) charLocation.Y = (480 - charLocation.Height);
+			if (charLocation.Y + charLocation.Height > 480) charLocation.Y = (480 - charLocation.Height);*/
 		}
 
 		public bool CheckCollision(Rectangle input1, Rectangle input2)
@@ -481,7 +462,7 @@ namespace AMON
 
 		public void CheckCloudCollision()
 		{
-			for (int index = 0; index <= cloudNumber - 1; index++)
+			/*for (int index = 0; index <= cloudNumber - 1; index++)
 			{
 				if (CheckCollision(charLocation, testCloud[index]))
 				{
@@ -501,12 +482,12 @@ namespace AMON
 						}
 					}
 				}
-			}
+			}*/
 		}
 
 		public void CheckPlaneCollision()
 		{
-			if (CheckCollision(charLocation, planeLocation))
+			/*if (CheckCollision(charLocation, planeLocation))
 			{
 				if (poweredUp)
 				{
@@ -527,12 +508,12 @@ namespace AMON
 					audioManager.StopBackgroundMusic();
 					audioManager.PlayPathetic();
 				}
-			}
+			}*/
 		}
 
 		public void CheckPowerUpCollision()
 		{
-			if (CheckCollision(powerUpLocation, charLocation))
+			/*if (CheckCollision(powerUpLocation, charLocation))
 			{
 				poweredUp = true;
 				charColor = Color.LightBlue * 0.8f;
@@ -540,28 +521,29 @@ namespace AMON
 				powerUpLocation.Y = 480;
 				timer = 0;
 				charImage = charFine;
-			}
+			}*/
 		}
 
-		public void RandomizeCloud(int index)
+
+		public void CheckTimer()
 		{
-			Random randX, randY, randHeight, randWidth, randImage;
-			int baseSeed = (int)DateTime.Now.Ticks;
-
-			randHeight = new Random(baseSeed + 3 * (index + 1));
-			randWidth = new Random(baseSeed + 4 * (index + 1));
-			randX = new Random(baseSeed + (index + 1));
-			randY = new Random(baseSeed + 2 * (index + 1));
-			randImage = new Random(baseSeed * index);
-
-			int newHeight = randHeight.Next(100, 300);
-			int newWidth = randWidth.Next(150, 500);
-			int newX = randX.Next(0, 800 - newWidth);
-			int newY = randY.Next(480, 700);
-			//cloudTextureIndex[index] = randImage.Next(0,3);
-			cloudTextureIndex[index]++;
-			if (cloudTextureIndex[index] > 3) cloudTextureIndex[index] -= 3;
-			testCloud[index] = new Rectangle(newX, newY, newWidth, newHeight);
+			/*if (timer > 0)
+			{
+				charImage = charNotFine;
+				charColor = Color.Aquamarine;
+				timer--;
+				charLocation.Height = 50;
+				charLocation.Width = 26;
+				terminalVelocity = 9;
+			}
+			else
+			{
+				if (!poweredUp) charColor = Color.White;
+				charImage = charFine;
+				charLocation.Height = 46;
+				charLocation.Width = 38;
+				terminalVelocity = 7;
+			}*/
 		}
 
 		public void UpdateCloud()
@@ -584,31 +566,6 @@ namespace AMON
 				scrolling1.Y = scrolling2.Y + scrolling2Texture.Height;
 			if (scrolling2.Y + scrolling2Texture.Height <= 0)
 				scrolling2.Y = scrolling1.Y + scrolling1Texture.Height;
-		}
-
-		public void CheckTimer()
-		{
-			if (timer > 0)
-			{
-				charImage = charNotFine;
-				charColor = Color.Aquamarine;
-				timer--;
-				charLocation.Height = 50;
-				charLocation.Width = 26;
-				charVertSpeed = 1;
-				charHorizSpeed = 4;
-				terminalVelocity = 9;
-			}
-			else
-			{
-				if (!poweredUp) charColor = Color.White;
-				charImage = charFine;
-				charLocation.Height = 46;
-				charLocation.Width = 38;
-				charVertSpeed = 3;
-				charHorizSpeed = 7;
-				terminalVelocity = 7;
-			}
 		}
 
 		public void DrawClouds(SpriteBatch spriteBatch)
