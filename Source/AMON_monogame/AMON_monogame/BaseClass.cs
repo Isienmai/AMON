@@ -10,19 +10,15 @@ namespace AMON
 {
 	class BaseClass
 	{
-		private Rectangle scrolling1, scrolling2, planeLocation, CastleLocation;
-		public Texture2D charFine, charNotFine, scrolling1Texture, scrolling2Texture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
+		private Rectangle CastleLocation;
+		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public Color charColor;
 		public int terminalVelocity;
 		public bool started, failed, won, midwayPlayed;
 		//public SpriteFont font1;
 		public int playInstance;
 		public bool poweredUp;
-
-		public int planeSpriteUsed;
-
-		public Texture2D[] planeImage = new Texture2D[4];
-
+		
 		public float timeElapsed;
 
 		public int cloudNumber = 2;
@@ -38,7 +34,7 @@ namespace AMON
 
 
 
-		public Texture2D grenadeTexture, rocketTexture;
+		public Texture2D grenadeTexture, rocketTexture, planeMovingRight, planeMovingLeft;
 
 		private AudioManager audioManager;
 
@@ -46,6 +42,8 @@ namespace AMON
 		private Viewport viewport;
 
 		private PlayerCharacter thePlayer;
+
+		private Background scrollingBackground;
 
 		public BaseClass(Viewport viewSize, ref AudioManager mainAudioManager)
 		{
@@ -61,20 +59,18 @@ namespace AMON
 			poweredUp = false;
 			CastleLocation = new Rectangle(0, 480, 800, 480);
 			playInstance = 0;
-			planeTimer = 0;
+			planeTimer = 500;
 			midwayPlayed = false;
 			timeElapsed = 0;
-			planeSpriteUsed = 0;
-			planeLocation = new Rectangle(-148, 200, 148, 38);
 			enemyRocketTimer = 100;
 
 			thePlayer = new PlayerCharacter(new Vector2(388, 10), charFine);
 			allObjects.Add(thePlayer);
 
+			scrollingBackground = new Background(backgroundTexture, 60, viewport);
+
 			charColor = Color.White;
 			terminalVelocity = 5;
-			scrolling1 = new Rectangle(0, 0, 800, 500);
-			scrolling2 = new Rectangle(0, 480, 800, 500);
 			started = false;
 			failed = false;
 			won = false;
@@ -98,8 +94,8 @@ namespace AMON
 
 		public void LoadContent(ContentManager Content)
 		{
-			planeImage[0] = Content.Load<Texture2D>("Images/plane");
-			planeImage[1] = Content.Load<Texture2D>("Images/Plane flipped");
+			planeMovingRight = Content.Load<Texture2D>("Images/plane");
+			planeMovingLeft = Content.Load<Texture2D>("Images/Plane flipped");
 
 			powerUpImage = Content.Load<Texture2D>("Images/Shield");
 
@@ -109,10 +105,8 @@ namespace AMON
 
 			charNotFine = Content.Load<Texture2D>("Images/Parachute midget damaged");
 
-			scrolling1Texture = Content.Load<Texture2D>("Images/Background11.fw");
-
-			scrolling2Texture = Content.Load<Texture2D>("Images/Background12.fw");
-
+			backgroundTexture = Content.Load<Texture2D>("Images/Background11.fw");
+			
 			beginMessage = Content.Load<Texture2D>("Images/StartupMessage");
 
 			failureMessage = Content.Load<Texture2D>("Images/FailureMessage");
@@ -137,9 +131,13 @@ namespace AMON
 			CheckAll();
 			UpdateAll();
 
+			float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
+
+			scrollingBackground.Tick(dt);
+
 			for (int i = 0; i < allObjects.Count; ++i)
 			{
-				allObjects[i].Tick((float)gameTime.ElapsedGameTime.Milliseconds * 0.001f);
+				allObjects[i].Tick(dt);
 			}
 
 			explosion.Update(gameTime);
@@ -147,14 +145,10 @@ namespace AMON
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			//draw background
-			spriteBatch.Draw(scrolling1Texture, scrolling1, Color.White);
-			spriteBatch.Draw(scrolling2Texture, scrolling2, Color.White);
+			scrollingBackground.Draw(spriteBatch);
+
 			spriteBatch.Draw(castleImage, CastleLocation, Color.White);
 			
-			//draw plane
-			spriteBatch.Draw(planeImage[planeSpriteUsed], planeLocation, Color.White);
-
 			//draw clouds
 			DrawClouds(spriteBatch);
 
@@ -180,10 +174,8 @@ namespace AMON
 			{
 				UpdateCastle();
 				UpdatePainTimer();
-				UpdateBackground();
 				UpdateCloud();
-				if (timeElapsed > 10f) UpdateEnemyRocket();
-				UpdatePlane();
+				if (timeElapsed > 10f) UpdateEnemyWeapons();
 			}
 		}
 
@@ -200,31 +192,74 @@ namespace AMON
 		{
 			if (painTimer > 0) painTimer--;
 		}
-
-		public void UpdatePlane()
-		{
-			if (timeElapsed > 25)
-			{
-				if ((planeSpriteUsed == 0) && (planeTimer == 0)) planeLocation.X += 7;
-				if ((planeSpriteUsed == 1) && (planeTimer == 0)) planeLocation.X -= 7;
-			}
-		}
-		
-		public void UpdateEnemyRocket()
+				
+		public void UpdateEnemyWeapons()
 		{
 			if (enemyRocketTimer == 0)
 			{
-
-				if (timeElapsed < 35) enemyRocketTimer = 100;
+				if (timeElapsed < 35)
+				{
+					enemyRocketTimer = 100;
+				}
 				else
-				if (timeElapsed < 45) enemyRocketTimer = 80;
+				if (timeElapsed < 45)
+				{
+					enemyRocketTimer = 80;
+				}
 				else
-				if (timeElapsed < 55) enemyRocketTimer = 60;
-				else enemyRocketTimer = 40;
+				if (timeElapsed < 55)
+				{
+					enemyRocketTimer = 60;
+				}
+				else
+				{
+					enemyRocketTimer = 40;
+				}
 
 				allObjects.Add(new Missile(new Vector2(thePlayer.GetCentre().X, 500), rocketTexture));
+			
 			}
-			else enemyRocketTimer--;
+			else
+			{
+				enemyRocketTimer--;
+			}
+
+
+			if (planeTimer == 0)
+			{
+				if (timeElapsed < 35)
+				{
+					planeTimer = 250;
+				}
+				else
+				if (timeElapsed < 45)
+				{
+					planeTimer = 200;
+				}
+				else
+				if (timeElapsed < 55)
+				{
+					planeTimer = 150;
+				}
+				else
+				{
+					planeTimer = 100;
+				}
+				
+				//randomise direction of movement
+				if (new Random().Next(0, 200) < 100)
+				{
+					allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), planeMovingLeft, true));
+				}
+				else
+				{
+					allObjects.Add(new Plane(new Vector2(planeMovingRight.Width * -1, thePlayer.GetCentre().Y), planeMovingRight, false));
+				}
+			}
+			else
+			{
+				planeTimer--;
+			}
 		}
 
 		public void RandomizeCloud(int index)
@@ -262,7 +297,6 @@ namespace AMON
 				CheckBombRocketCollision();
 				CheckTimer();
 				CheckPlaneCollision();
-				CheckPlane();
 			}
 		}
 
@@ -282,33 +316,7 @@ namespace AMON
 				midwayPlayed = true;
 			}
 		}
-
-		public void CheckPlane()
-		{
-			if (planeLocation.X > 800)
-			{
-				planeSpriteUsed = 1;
-				planeLocation.Y = (int)thePlayer.GetCentre().Y;
-				planeLocation.X = 800;
-				if (timeElapsed < 30) planeTimer = 150;
-				else
-				if (timeElapsed < 45) planeTimer = 100;
-				else planeTimer = 50;
-			}
-			if (planeLocation.X < -148)
-			{
-				planeSpriteUsed = 0;
-				planeLocation.Y = (int)thePlayer.GetCentre().Y;
-				planeLocation.X = -148;
-				if (timeElapsed < 30) planeTimer = 150;
-				else
-				if (timeElapsed < 45) planeTimer = 100;
-				else planeTimer = 50;
-			}
-
-			if (planeTimer != 0) planeTimer--;
-		}
-
+		
 		public void CheckCharRocketCollision()
 		{
 			/*for (int i = 0; i < rocketList.Count; i++)
@@ -556,16 +564,6 @@ namespace AMON
 					RandomizeCloud(index);
 				}
 			}
-		}
-
-		public void UpdateBackground()
-		{
-			scrolling1.Y -= terminalVelocity - 3;
-			scrolling2.Y -= terminalVelocity - 3;
-			if (scrolling1.Y + scrolling1Texture.Height <= 0)
-				scrolling1.Y = scrolling2.Y + scrolling2Texture.Height;
-			if (scrolling2.Y + scrolling2Texture.Height <= 0)
-				scrolling2.Y = scrolling1.Y + scrolling1Texture.Height;
 		}
 
 		public void DrawClouds(SpriteBatch spriteBatch)

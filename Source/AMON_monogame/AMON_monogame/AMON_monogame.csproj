@@ -43,8 +43,10 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="AudioManager.cs" />
+    <Compile Include="Background.cs" />
     <Compile Include="BaseClass.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="Cloud.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Powerup.cs" />

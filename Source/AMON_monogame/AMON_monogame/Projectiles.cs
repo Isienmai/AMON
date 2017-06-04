@@ -23,9 +23,21 @@ namespace AMON
 
 	class Missile : Projectile
 	{
-		public Missile(Vector2 spawnLocation, Texture2D grenadeSprite) : base(spawnLocation, grenadeSprite)
+		public Missile(Vector2 spawnLocation, Texture2D missileSprite) : base(spawnLocation, missileSprite)
 		{
 			velocity.Y = -500;
+		}
+	}
+
+	class Plane : Projectile 
+	{
+		public Plane(Vector2 spawnLocation, Texture2D planeSprite, bool movingLeft) : base(spawnLocation, planeSprite)
+		{
+			velocity.X = 200;
+			if (movingLeft)
+			{
+				velocity.X *= -1;
+			}
 		}
 	}
 }

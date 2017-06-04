@@ -45,7 +45,7 @@ namespace AMON
 		/// Update the object's velocity to control the player's movement.
 		/// </summary>
 		/// <param name="horizontalMovement"> Negative = left, Positive = right, Zero = no motion</param>
-		/// <param name="verticalMovement">Negative = up, Positive = down, Zero = no motion</param>
+		/// <param name="verticalMovement"> Negative = up, Positive = down, Zero = no motion</param>
 		public void MovePlayer(int horizontalMovement, int verticalMovement)
 		{
 			//convert the inputs to -1, 0, or +1 depending on their sign

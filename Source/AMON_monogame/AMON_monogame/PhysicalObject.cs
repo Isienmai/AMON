@@ -41,7 +41,7 @@ namespace AMON
 
 		public Vector2 GetCentre()
 		{
-			return new Vector2(position.X + dimensions.X/2.0f, position.Y/dimensions.Y/2.0f);
+			return new Vector2(position.X + dimensions.X/2.0f, position.Y + dimensions.Y/2.0f);
 		}
 
 		public virtual void Tick(float deltaTime)
