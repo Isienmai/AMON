@@ -12,7 +12,6 @@ namespace AMON
 	{
 		private Rectangle CastleLocation;
 		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
-		public Color charColor;
 		public int terminalVelocity;
 		public bool started, failed, won, midwayPlayed;
 		//public SpriteFont font1;
@@ -20,15 +19,10 @@ namespace AMON
 		public bool poweredUp;
 		
 		public float timeElapsed;
-
-		public int cloudNumber = 2;
-		int[] cloudTextureIndex = new int[9];
-		Rectangle[] testCloud = new Rectangle[9];
+		
 		public Texture2D[] cloud = new Texture2D[4];
-
-
-		int timer;
-		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer;		
+				
+		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;
 
 		public Animation explosion;
 
@@ -55,7 +49,7 @@ namespace AMON
 		{
 			allObjects = new List<PhysicalObject>();
 
-			timer = 0;
+			powerupTimer = 0;
 			poweredUp = false;
 			CastleLocation = new Rectangle(0, 480, 800, 480);
 			playInstance = 0;
@@ -69,27 +63,11 @@ namespace AMON
 
 			scrollingBackground = new Background(backgroundTexture, 60, viewport);
 
-			charColor = Color.White;
 			terminalVelocity = 5;
 			started = false;
 			failed = false;
 			won = false;
 
-			InitialiseClouds();
-
-		}
-
-		public void InitialiseClouds()
-		{
-			for (int index = 0; index <= cloudNumber - 1; index++)
-			{
-				testCloud[index] = new Rectangle(0, index * 10000, 0, 0);
-			}
-
-			for (int index = 0; index <= 3; index++)
-			{
-				cloudTextureIndex[index] = index;
-			}
 		}
 
 		public void LoadContent(ContentManager Content)
@@ -149,9 +127,6 @@ namespace AMON
 
 			spriteBatch.Draw(castleImage, CastleLocation, Color.White);
 			
-			//draw clouds
-			DrawClouds(spriteBatch);
-
 			for(int i = 0; i < allObjects.Count; ++i)
 			{
 				allObjects[i].Draw(spriteBatch);
@@ -174,7 +149,6 @@ namespace AMON
 			{
 				UpdateCastle();
 				UpdatePainTimer();
-				UpdateCloud();
 				if (timeElapsed > 10f) UpdateEnemyWeapons();
 			}
 		}
@@ -260,9 +234,20 @@ namespace AMON
 			{
 				planeTimer--;
 			}
+
+			if(cloudTimer == 0)
+			{
+				cloudTimer = 200;
+
+				allObjects.Add(new Cloud(viewport.Bounds, cloud[0]));
+			}
+			else
+			{
+				cloudTimer--;
+			}
 		}
 
-		public void RandomizeCloud(int index)
+		/*public void RandomizeCloud(int index)
 		{
 			Random randX, randY, randHeight, randWidth, randImage;
 			int baseSeed = (int)DateTime.Now.Ticks;
@@ -281,7 +266,7 @@ namespace AMON
 			cloudTextureIndex[index]++;
 			if (cloudTextureIndex[index] > 3) cloudTextureIndex[index] -= 3;
 			testCloud[index] = new Rectangle(newX, newY, newWidth, newHeight);
-		}
+		}*/
 
 		public void CheckAll()
 		{
@@ -470,7 +455,7 @@ namespace AMON
 
 		public void CheckCloudCollision()
 		{
-			/*for (int index = 0; index <= cloudNumber - 1; index++)
+			/*for (int index = 0; index < cloudNumber; index++)
 			{
 				if (CheckCollision(charLocation, testCloud[index]))
 				{
@@ -552,26 +537,6 @@ namespace AMON
 				charLocation.Width = 38;
 				terminalVelocity = 7;
 			}*/
-		}
-
-		public void UpdateCloud()
-		{
-			for (int index = 0; index <= cloudNumber - 1; index++)
-			{
-				testCloud[index].Y -= terminalVelocity - 2;
-				if (testCloud[index].Y < 0 - testCloud[index].Height)
-				{
-					RandomizeCloud(index);
-				}
-			}
-		}
-
-		public void DrawClouds(SpriteBatch spriteBatch)
-		{
-			for (int index = 0; index <= cloudNumber - 1; index++)
-			{
-				spriteBatch.Draw(cloud[cloudTextureIndex[index]], testCloud[index], Color.White);
-			}
 		}
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)
