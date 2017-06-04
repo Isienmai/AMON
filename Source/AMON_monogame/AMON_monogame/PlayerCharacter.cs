@@ -33,6 +33,14 @@ namespace AMON
 			UpdateCollider();
 		}
 
+		protected override void SpecifyCollidableTypes()
+		{
+			collidableTypes.Add(typeof(Missile));
+			collidableTypes.Add(typeof(Plane));
+			collidableTypes.Add(typeof(Cloud));
+			collidableTypes.Add(typeof(Powerup));
+		}
+
 		//WARNING: This method is never called right now. Its parent Tick is called instead because it's in a list of <parent object>
 		public override void Tick(float deltaTime)
 		{

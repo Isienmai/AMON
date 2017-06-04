@@ -26,6 +26,13 @@ namespace AMON
 			position.Y = randGenerator.Next(480, 700);
 
 			velocity.Y = -300;
+
+			collidableTypes.Add(typeof(PlayerCharacter));
+		}
+
+		protected override void SpecifyCollidableTypes()
+		{
+			collidableTypes.Add(typeof(PlayerCharacter));
 		}
 	}
 }

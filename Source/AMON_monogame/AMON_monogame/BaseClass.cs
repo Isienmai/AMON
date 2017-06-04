@@ -107,11 +107,11 @@ namespace AMON
 		public void Tick(GameTime gameTime)
 		{
 			if (started) timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-			
-			CheckAll();
-			UpdateAll();
 
 			float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
+
+			CheckAll();
+			UpdateAll();
 
 			scrollingBackground.Tick(dt);
 
@@ -119,6 +119,8 @@ namespace AMON
 			{
 				allObjects[i].Tick(dt);
 			}
+
+			HandleObjectCollisions();
 
 			explosion.Update(gameTime);
 		}
@@ -332,6 +334,40 @@ namespace AMON
 				charLocation.Width = 38;
 				terminalVelocity = 7;
 			}*/
+		}
+
+
+		private void HandleObjectCollisions()
+		{
+			List<Point> detectedCollisions = new List<Point>();
+			for (int i = 0; i < allObjects.Count; ++i)
+			{
+				for (int j = i; j < allObjects.Count; ++j)
+				{
+					if(allObjects[i].Collided(allObjects[j]))
+					{
+						ReactToCollision(allObjects[i], allObjects[j]);
+					}
+				}
+			}
+		}
+
+		private void ReactToCollision(PhysicalObject object1, PhysicalObject object2)
+		{
+			if (object1 == null) return;
+			if (object2 == null) return;
+
+			if (object1 is Projectile || object2 is Projectile)
+			{
+				audioManager.PlayExplosion();
+				allObjects.Remove(object1);
+				allObjects.Remove(object2);
+
+				if(object1 is PlayerCharacter || object2 is PlayerCharacter)
+				{
+					failed = true;
+				}
+			}
 		}
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)

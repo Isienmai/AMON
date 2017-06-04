@@ -14,5 +14,10 @@ namespace AMON
 		{
 			position = SpawnLocation;
 		}
+
+		protected override void SpecifyCollidableTypes()
+		{
+			collidableTypes.Add(typeof(PlayerCharacter));
+		}
 	}
 }

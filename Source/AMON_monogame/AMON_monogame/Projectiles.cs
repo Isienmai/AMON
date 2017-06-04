@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
-	class Projectile : PhysicalObject
+	abstract class Projectile : PhysicalObject
 	{
 		public Projectile(Vector2 spawnLocation, Texture2D projectileSprite) : base(spawnLocation, projectileSprite){}
 	}
@@ -19,6 +19,12 @@ namespace AMON
 		{
 			velocity.Y = 500;
 		}
+
+		protected override void SpecifyCollidableTypes()
+		{
+			collidableTypes.Add(typeof(Missile));
+			collidableTypes.Add(typeof(Plane));
+		}
 	}
 
 	class Missile : Projectile
@@ -26,6 +32,13 @@ namespace AMON
 		public Missile(Vector2 spawnLocation, Texture2D missileSprite) : base(spawnLocation, missileSprite)
 		{
 			velocity.Y = -500;
+		}
+
+		protected override void SpecifyCollidableTypes()
+		{
+			collidableTypes.Add(typeof(Grenade));
+			collidableTypes.Add(typeof(Plane));
+			collidableTypes.Add(typeof(PlayerCharacter));
 		}
 	}
 
@@ -38,6 +51,13 @@ namespace AMON
 			{
 				velocity.X *= -1;
 			}
+		}
+
+		protected override void SpecifyCollidableTypes()
+		{
+			collidableTypes.Add(typeof(Grenade));
+			collidableTypes.Add(typeof(Missile));
+			collidableTypes.Add(typeof(PlayerCharacter));
 		}
 	}
 }

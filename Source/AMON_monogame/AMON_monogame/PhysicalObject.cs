@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace AMON
 {
 	//This class represents anything with a physical presence ingame
-	class PhysicalObject
+	abstract class PhysicalObject
 	{
 		private Rectangle drawDest;
 		protected Vector2 dimensions;
@@ -17,6 +17,11 @@ namespace AMON
 		protected Vector2 velocity;
 		protected Texture2D sprite;
 		protected Color drawColour;
+
+		//Keep track of the types that this object can collide with.
+		//Implementation needs work
+		//Empty list indicates this object can collide with everything
+		protected List<Type> collidableTypes;
 
 		public PhysicalObject(Texture2D objectSprite)
 		{
@@ -32,12 +37,17 @@ namespace AMON
 		{
 			velocity = new Vector2();
 			drawDest = new Rectangle();
+			collidableTypes = new List<Type>();
 
 			position = SpawnLocation;
 			sprite = objectSprite;
 			dimensions = new Vector2(sprite.Bounds.Width, sprite.Bounds.Height);
 			drawColour = Color.White;
+
+			SpecifyCollidableTypes();
 		}
+
+		protected abstract void SpecifyCollidableTypes();
 
 		public Vector2 GetCentre()
 		{
@@ -52,6 +62,15 @@ namespace AMON
 
 		public bool Collided(PhysicalObject other)
 		{
+			bool ignoreOther = true;
+			for(int i = 0; i < collidableTypes.Count; ++i)
+			{
+				if (collidableTypes[i].IsInstanceOfType(other)) ignoreOther = false;
+			}
+
+			//Return no collision if the other object cannot collide with this one
+			if (ignoreOther && collidableTypes.Count != 0) return false;
+
 			//Check if the two rectangles overlap horizontally
 			float overallWidth = (other.position.X + other.dimensions.X) - this.position.X;
 			float combinedWidth = other.dimensions.X + this.dimensions.X;
