@@ -20,7 +20,7 @@ namespace AMON
 		
 		public float timeElapsed;
 		
-		public Texture2D[] cloud = new Texture2D[4];
+		public Texture2D[] cloudTextures = new Texture2D[2];
 				
 		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;
 
@@ -39,6 +39,8 @@ namespace AMON
 
 		private Background scrollingBackground;
 
+		private Random randNumGen;
+
 		public BaseClass(Viewport viewSize, ref AudioManager mainAudioManager)
 		{
 			viewport = viewSize;
@@ -47,6 +49,8 @@ namespace AMON
 
 		public void Initialise()
 		{
+			randNumGen = new Random();
+
 			allObjects = new List<PhysicalObject>();
 
 			powerupTimer = 0;
@@ -91,10 +95,8 @@ namespace AMON
 
 			victoryMessage = Content.Load<Texture2D>("Images/VictoryMessage");
 
-			cloud[0] = Content.Load<Texture2D>("Images/Cloud2");
-			cloud[1] = Content.Load<Texture2D>("Images/Cloud2");
-			cloud[2] = Content.Load<Texture2D>("Images/Cloud4");
-			cloud[3] = Content.Load<Texture2D>("Images/Cloud4");
+			cloudTextures[0] = Content.Load<Texture2D>("Images/Cloud2");
+			cloudTextures[1] = Content.Load<Texture2D>("Images/Cloud4");
 
 			grenadeTexture = Content.Load<Texture2D>("Images/Bomb");
 			rocketTexture = Content.Load<Texture2D>("Images/Rocket");
@@ -221,7 +223,7 @@ namespace AMON
 				}
 				
 				//randomise direction of movement
-				if (new Random().Next(0, 200) < 100)
+				if (randNumGen.Next(0, 200) < 100)
 				{
 					allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), planeMovingLeft, true));
 				}
@@ -237,9 +239,9 @@ namespace AMON
 
 			if(cloudTimer == 0)
 			{
-				cloudTimer = 200;
+				cloudTimer = randNumGen.Next((int)timeElapsed * 4, (int)timeElapsed * 10);
 
-				allObjects.Add(new Cloud(viewport.Bounds, cloud[0]));
+				allObjects.Add(new Cloud(viewport.Bounds, cloudTextures[randNumGen.Next(0,2)]));
 			}
 			else
 			{
@@ -247,41 +249,13 @@ namespace AMON
 			}
 		}
 
-		/*public void RandomizeCloud(int index)
-		{
-			Random randX, randY, randHeight, randWidth, randImage;
-			int baseSeed = (int)DateTime.Now.Ticks;
-
-			randHeight = new Random(baseSeed + 3 * (index + 1));
-			randWidth = new Random(baseSeed + 4 * (index + 1));
-			randX = new Random(baseSeed + (index + 1));
-			randY = new Random(baseSeed + 2 * (index + 1));
-			randImage = new Random(baseSeed * index);
-
-			int newHeight = randHeight.Next(100, 300);
-			int newWidth = randWidth.Next(150, 500);
-			int newX = randX.Next(0, 800 - newWidth);
-			int newY = randY.Next(480, 700);
-			//cloudTextureIndex[index] = randImage.Next(0,3);
-			cloudTextureIndex[index]++;
-			if (cloudTextureIndex[index] > 3) cloudTextureIndex[index] -= 3;
-			testCloud[index] = new Rectangle(newX, newY, newWidth, newHeight);
-		}*/
-
 		public void CheckAll()
 		{
 			if (!failed && !won)
 			{
-				CheckPowerUpCollision();
-				CheckPlaneRocketCollision();
-				CheckBombPlaneCollision();
 				CheckTime();
 				CheckWallCollision();
-				CheckCloudCollision();
-				CheckCharRocketCollision();
-				CheckBombRocketCollision();
 				CheckTimer();
-				CheckPlaneCollision();
 			}
 		}
 
@@ -300,102 +274,6 @@ namespace AMON
 				audioManager.PlayMidway();
 				midwayPlayed = true;
 			}
-		}
-		
-		public void CheckCharRocketCollision()
-		{
-			/*for (int i = 0; i < rocketList.Count; i++)
-			{
-				if (CheckCollision(charLocation, new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
-				{
-					if (poweredUp)
-					{
-						poweredUp = false;
-
-						audioManager.PlayWorseThanMySister();
-						audioManager.PlayExplosion();
-
-						explosion.position = new Vector2(charLocation.X, charLocation.Y);
-
-						explosionTimer = 25;
-						rocketList.Remove(rocketList[i]);
-
-					}
-					else
-					{
-						failed = true;
-						MediaPlayer.Stop();
-						audioManager.PlayPathetic();
-						timeElapsed = -100f;
-						audioManager.PlayExplosion();
-					}
-				}
-			}*/
-		}
-
-		public void CheckBombRocketCollision()
-		{
-			/*for (int j = 0; j < bulletList.Count; j++)
-			{
-				for (int i = 0; i < rocketList.Count; i++)
-				{
-					if (CheckCollision(new Rectangle((int)bulletList[j].bulletPos.X, (int)bulletList[j].bulletPos.Y, bulletList[j].bulletTexture.Width, bulletList[j].bulletTexture.Height), new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
-					{
-						audioManager.PlayBrilliant();
-						audioManager.PlayExplosion();
-
-						explosion.position = new Vector2(bulletList[j].bulletPos.X, bulletList[j].bulletPos.Y);
-
-						explosionTimer = 25;
-						rocketList.Remove(rocketList[i]);
-						bulletList.Remove(bulletList[j]);
-					}
-				}
-			}*/
-		}
-
-		public void CheckPlaneRocketCollision()
-		{
-			/*for (int i = 0; i < rocketList.Count; i++)
-			{
-				if (CheckCollision(planeLocation, new Rectangle((int)rocketList[i].bulletPos.X, (int)rocketList[i].bulletPos.Y, rocketList[i].bulletTexture.Width, rocketList[i].bulletTexture.Height)))
-				{
-					audioManager.PlayBrilliant();
-					audioManager.PlayExplosion();
-
-					explosion.position = new Vector2(rocketList[i].bulletPos.X, rocketList[i].bulletPos.Y);
-					if (!poweredUp)
-					{
-						powerUpLocation.X = (int)rocketList[i].bulletPos.X;
-						powerUpLocation.Y = (int)rocketList[i].bulletPos.Y;
-					}
-
-
-					explosionTimer = 25;
-					rocketList.Remove(rocketList[i]);
-
-					if (planeSpriteUsed == 0) planeLocation.X = 800;
-					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
-				}
-			}*/
-		}
-
-		public void CheckBombPlaneCollision()
-		{
-			/*for (int j = 0; j < bulletList.Count; j++)
-			{
-				if (CheckCollision(new Rectangle((int)bulletList[j].bulletPos.X, (int)bulletList[j].bulletPos.Y, bulletList[j].bulletTexture.Width, bulletList[j].bulletTexture.Height), planeLocation))
-				{
-					audioManager.PlayExplosion();
-
-					explosion.position = new Vector2(bulletList[j].bulletPos.X, bulletList[j].bulletPos.Y);
-
-					explosionTimer = 25;
-					if (planeSpriteUsed == 0) planeLocation.X = 800;
-					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
-					bulletList.Remove(bulletList[j]);
-				}
-			}*/
 		}
 
 		public int CheckInput()
@@ -434,89 +312,6 @@ namespace AMON
 			if (charLocation.Y < 0) charLocation.Y = 0;
 			if (charLocation.Y + charLocation.Height > 480) charLocation.Y = (480 - charLocation.Height);*/
 		}
-
-		public bool CheckCollision(Rectangle input1, Rectangle input2)
-		{
-			if (
-				((((input1.X > input2.X) && (input1.X < input2.X + input2.Width)) &&
-				((input1.Y > input2.Y) && (input1.Y < input2.Y + input2.Height))) ||
-				(((input1.X + input1.Width > input2.X) && (input1.X + input1.Width < input2.X + input2.Width)) &&
-				((input1.Y + input1.Height > input2.Y) && (input1.Y + input1.Height < input2.Y + input2.Height))))
-				||
-				((((input1.X + input1.Width > input2.X) && (input1.X < input2.X + input2.Width)) &&
-				((input1.Y + input1.Height > input2.Y) && (input1.Y < input2.Y + input2.Height))) ||
-				(((input1.X > input2.X) && (input1.X + input1.Width < input2.X + input2.Width)) &&
-				((input1.Y > input2.Y) && (input1.Y + input1.Height < input2.Y + input2.Height)))))
-			{
-				return true;
-			}
-			return false;
-		}
-
-		public void CheckCloudCollision()
-		{
-			/*for (int index = 0; index < cloudNumber; index++)
-			{
-				if (CheckCollision(charLocation, testCloud[index]))
-				{
-					if (!poweredUp)
-					{
-						if (timer == 0)
-						{
-							timer = 130;
-						}
-
-						if (timer <= 60) timer = 60;
-
-						if (painTimer == 0)
-						{
-							audioManager.PlayRandomPain();
-							painTimer = 20;
-						}
-					}
-				}
-			}*/
-		}
-
-		public void CheckPlaneCollision()
-		{
-			/*if (CheckCollision(charLocation, planeLocation))
-			{
-				if (poweredUp)
-				{
-					poweredUp = false;
-					audioManager.PlayWorseThanMySister();
-					audioManager.PlayExplosion();
-
-					explosion.position = new Vector2(charLocation.X, charLocation.Y);
-
-					explosionTimer = 25;
-					if (planeSpriteUsed == 0) planeLocation.X = 800;
-					if (planeSpriteUsed == 1) planeLocation.X = 0 - planeLocation.Width;
-
-				}
-				else
-				{
-					failed = true;
-					audioManager.StopBackgroundMusic();
-					audioManager.PlayPathetic();
-				}
-			}*/
-		}
-
-		public void CheckPowerUpCollision()
-		{
-			/*if (CheckCollision(powerUpLocation, charLocation))
-			{
-				poweredUp = true;
-				charColor = Color.LightBlue * 0.8f;
-				powerUpLocation.X = 800;
-				powerUpLocation.Y = 480;
-				timer = 0;
-				charImage = charFine;
-			}*/
-		}
-
 
 		public void CheckTimer()
 		{
