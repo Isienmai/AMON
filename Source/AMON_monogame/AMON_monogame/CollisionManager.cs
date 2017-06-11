@@ -42,6 +42,7 @@ namespace AMON
 
 		public void HandleCollisions(List<PhysicalObject> worldObjects)
 		{
+			//Create a list of all collisions
 			List<CollisionDetection> currentCollisions = new List<CollisionDetection>();
 			for (int i = 0; i < worldObjects.Count; ++i)
 			{

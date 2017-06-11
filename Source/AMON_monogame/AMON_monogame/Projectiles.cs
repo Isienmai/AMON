@@ -66,5 +66,12 @@ namespace AMON
 			collidableTypes.Add(typeof(Missile));
 			collidableTypes.Add(typeof(PlayerCharacter));
 		}
+
+		public override void ReactToCollisionEntry(PhysicalObject other)
+		{
+			if (other is Missile) AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.BRILLIANT);
+
+			base.ReactToCollisionEntry(other);
+		}
 	}
 }

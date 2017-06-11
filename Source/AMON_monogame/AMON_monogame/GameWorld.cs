@@ -11,15 +11,13 @@ namespace AMON
 	class GameWorld
 	{
 		private static GameWorld instance;
-
-		public int terminalVelocity;
+		
 		public bool started, failed, won, midwayPlayed;
 		public int playInstance;
-		public bool poweredUp;
 		
-		public float timeElapsed;		
+		public float timeElapsed;
 				
-		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;		
+		public int enemyRocketTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;
 
 		private AudioManager audioManager;
 		private CollisionManager collisionHandler;
@@ -61,7 +59,6 @@ namespace AMON
 			allObjects = new List<PhysicalObject>();
 
 			powerupTimer = 0;
-			poweredUp = false;
 			playInstance = 0;
 			planeTimer = 500;
 			midwayPlayed = false;
@@ -72,8 +69,7 @@ namespace AMON
 			allObjects.Add(thePlayer);
 
 			scrollingBackground = new Background(60, viewport);
-
-			terminalVelocity = 5;
+			
 			started = false;
 			failed = false;
 			won = false;
@@ -124,7 +120,6 @@ namespace AMON
 			if (started && !failed && !won)
 			{
 				//UpdateCastle();
-				UpdatePainTimer();
 				if (timeElapsed > 10f) UpdateEnemyWeapons();
 			}
 		}
@@ -137,11 +132,6 @@ namespace AMON
 			}
 			//if (!(CastleLocation.Y > 10)) charLocation.Y += terminalVelocity;
 		}*/
-
-		public void UpdatePainTimer()
-		{
-			if (painTimer > 0) painTimer--;
-		}
 				
 		public void UpdateEnemyWeapons()
 		{

@@ -22,7 +22,7 @@ namespace AMON
 
 		public override void ReactToCollision(PhysicalObject other)
 		{
-			//delete self
+			Destroy();
 		}
 	}
 }
