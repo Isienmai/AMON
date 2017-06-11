@@ -31,6 +31,7 @@ namespace AMON
 		public Texture2D grenadeTexture, rocketTexture, planeMovingRight, planeMovingLeft;
 
 		private AudioManager audioManager;
+		private CollisionManager collisionHandler;
 
 		private List<PhysicalObject> allObjects;
 		private Viewport viewport;
@@ -41,10 +42,11 @@ namespace AMON
 
 		private Random randNumGen;
 
-		public BaseClass(Viewport viewSize, ref AudioManager mainAudioManager)
+		public BaseClass(Viewport viewSize)
 		{
 			viewport = viewSize;
-			audioManager = mainAudioManager;
+			audioManager = AudioManager.Instance;
+			collisionHandler = new CollisionManager();
 		}
 
 		public void Initialise()
@@ -120,7 +122,7 @@ namespace AMON
 				allObjects[i].Tick(dt);
 			}
 
-			HandleObjectCollisions();
+			collisionHandler.HandleCollisions(allObjects);
 
 			explosion.Update(gameTime);
 		}
@@ -267,13 +269,13 @@ namespace AMON
 			{
 				won = true;
 				audioManager.StopBackgroundMusic();
-				audioManager.PlaySpeech();
+				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.TAUNT);
 				timeElapsed = 0;
 			}
 
 			if ((timeElapsed > 30f) && (!midwayPlayed))
 			{
-				audioManager.PlayMidway();
+				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
 				midwayPlayed = true;
 			}
 		}
@@ -295,7 +297,7 @@ namespace AMON
 			}
 			else if ((keybState.IsKeyDown(Keys.Enter)) && !started)
 			{
-				audioManager.PlayHateFalling();
+				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HATEFALLING);
 				started = true;
 				audioManager.StartBackgroundMusic();
 			}
@@ -339,6 +341,7 @@ namespace AMON
 
 		private void HandleObjectCollisions()
 		{
+			collisionHandler.HandleCollisions(allObjects);
 			List<Point> detectedCollisions = new List<Point>();
 			for (int i = 0; i < allObjects.Count; ++i)
 			{
@@ -346,26 +349,9 @@ namespace AMON
 				{
 					if(allObjects[i].Collided(allObjects[j]))
 					{
-						ReactToCollision(allObjects[i], allObjects[j]);
+						allObjects[i].ReactToCollision(allObjects[j]);
+						allObjects[j].ReactToCollision(allObjects[i]);
 					}
-				}
-			}
-		}
-
-		private void ReactToCollision(PhysicalObject object1, PhysicalObject object2)
-		{
-			if (object1 == null) return;
-			if (object2 == null) return;
-
-			if (object1 is Projectile || object2 is Projectile)
-			{
-				audioManager.PlayExplosion();
-				allObjects.Remove(object1);
-				allObjects.Remove(object2);
-
-				if(object1 is PlayerCharacter || object2 is PlayerCharacter)
-				{
-					failed = true;
 				}
 			}
 		}

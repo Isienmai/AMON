@@ -19,5 +19,10 @@ namespace AMON
 		{
 			collidableTypes.Add(typeof(PlayerCharacter));
 		}
+
+		public override void ReactToCollision(PhysicalObject other)
+		{
+			//delete self
+		}
 	}
 }

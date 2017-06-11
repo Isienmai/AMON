@@ -38,7 +38,33 @@ namespace AMON
 			collidableTypes.Add(typeof(Missile));
 			collidableTypes.Add(typeof(Plane));
 			collidableTypes.Add(typeof(Cloud));
-			collidableTypes.Add(typeof(Powerup));
+			//collidableTypes.Add(typeof(Powerup));
+		}
+
+		public override void ReactToCollision(PhysicalObject other)
+		{			
+			if(other is Cloud)
+			{
+				//try to switch to damp
+			}
+		}
+
+		public override void ReactToCollisionEntry(PhysicalObject other)
+		{
+			//Look into IDictionary and the Visitor pattern as possible alternatives to these if/else statements
+			if (other is Projectile)
+			{
+				AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.PATHETIC);
+				//destroy object
+			}
+			else if (other is Cloud)
+			{
+				AudioManager.Instance.PlayRandomPain();
+			}
+			/*else if(other is Powerup)
+			{
+				//switch to powered up state
+			}*/
 		}
 
 		//WARNING: This method is never called right now. Its parent Tick is called instead because it's in a list of <parent object>

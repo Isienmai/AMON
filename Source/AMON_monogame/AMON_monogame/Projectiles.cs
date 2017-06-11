@@ -11,6 +11,13 @@ namespace AMON
 	abstract class Projectile : PhysicalObject
 	{
 		public Projectile(Vector2 spawnLocation, Texture2D projectileSprite) : base(spawnLocation, projectileSprite){}
+
+		public override void ReactToCollisionEntry(PhysicalObject other)
+		{
+			AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.Explosion);
+			//Play explosion graphic
+			//Mark object for destruction
+		}		
 	}
 
 	class Grenade : Projectile

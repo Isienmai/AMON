@@ -49,6 +49,11 @@ namespace AMON
 
 		protected abstract void SpecifyCollidableTypes();
 
+		//Collision reactions to be implemented by base classes if needed.
+		public virtual void ReactToCollision(PhysicalObject other) { }
+		public virtual void ReactToCollisionEntry(PhysicalObject other) { }
+		public virtual void ReactToCollisionExit(PhysicalObject other) { }
+
 		public Vector2 GetCentre()
 		{
 			return new Vector2(position.X + dimensions.X/2.0f, position.Y + dimensions.Y/2.0f);

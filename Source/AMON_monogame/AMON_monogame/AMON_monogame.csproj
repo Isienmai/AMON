@@ -47,6 +47,7 @@
     <Compile Include="BaseClass.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Cloud.cs" />
+    <Compile Include="CollisionManager.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Powerup.cs" />

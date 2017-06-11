@@ -38,10 +38,10 @@ namespace AMON
 		/// </summary>
 		protected override void Initialize()
 		{
-			theVideoPlayer = new VideoPlayer();			
-			theAudioManager = new AudioManager();
+			theVideoPlayer = new VideoPlayer();
+			theAudioManager = AudioManager.Instance;
 
-			coreGameClass = new BaseClass(GraphicsDevice.Viewport, ref theAudioManager);
+			coreGameClass = new BaseClass(GraphicsDevice.Viewport);
 			
 			bombTimer = 0;
 
@@ -135,7 +135,7 @@ namespace AMON
 					spriteBatch.Draw(videoTexture, GraphicsDevice.Viewport.Bounds, Color.White);
 					if (!finalNukePlayed)
 					{
-						theAudioManager.PlayNukeSound();
+						theAudioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.NUKE);
 						finalNukePlayed = true;
 					}
 					bombTimer++;

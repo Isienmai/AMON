@@ -10,29 +10,60 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AMON
 {
+	//Singleton class for storing/playing all audio
 	public class AudioManager
 	{
-		private SoundEffect brilliant, speech, hateFalling, midway, pathetic, worseThanMySister, explosion, nukeSound;
+		public enum AUDIOCLIPS
+		{
+			BRILLIANT = 0,
+			TAUNT,
+			HATEFALLING,
+			HOWLONG,
+			PATHETIC,
+			WORSETHANSISTER,
+			Explosion,
+			NUKE,
+			COUNT
+		}
+
+		private static AudioManager instance;
+
+		private List<SoundEffect> audioClips;
 		private List<SoundEffect> pain;
 		private Song background1;
 
-		public AudioManager()
+		private AudioManager()
 		{
 			pain = new List<SoundEffect>();
 			SetMediaPlayerVolume(5);
 		}
 
+		public static AudioManager Instance
+		{
+			get
+			{
+				if(instance == null)
+				{
+					instance = new AudioManager();
+				}
+
+				return instance;
+			}
+		}
+
 		public void LoadContent(ContentManager Content)
 		{
+			audioClips = new List<SoundEffect>(new SoundEffect[(int)AUDIOCLIPS.COUNT]);
 			background1 = Content.Load<Song>("Super Street Fighter 2 - Guile's Stage");
-			brilliant = Content.Load<SoundEffect>("Sounds/Brilliant");
-			speech = Content.Load<SoundEffect>("Sounds/CrazySpeech");
-			hateFalling = Content.Load<SoundEffect>("Sounds/HateFallingShout");
-			midway = Content.Load<SoundEffect>("Sounds/HowLongUntilIWin");
-			pathetic = Content.Load<SoundEffect>("Sounds/Pathetic");
-			worseThanMySister = Content.Load<SoundEffect>("Sounds/WorseThanMySister");
-			explosion = Content.Load<SoundEffect>("Sounds/Explosion");
-			nukeSound = Content.Load<SoundEffect>("Nukes");
+
+			audioClips[(int)AUDIOCLIPS.BRILLIANT] = Content.Load<SoundEffect>("Sounds/Brilliant");
+			audioClips[(int)AUDIOCLIPS.TAUNT] = Content.Load<SoundEffect>("Sounds/CrazySpeech");
+			audioClips[(int)AUDIOCLIPS.HATEFALLING] = Content.Load<SoundEffect>("Sounds/HateFallingShout");
+			audioClips[(int)AUDIOCLIPS.HOWLONG] = Content.Load<SoundEffect>("Sounds/HowLongUntilIWin");
+			audioClips[(int)AUDIOCLIPS.PATHETIC] = Content.Load<SoundEffect>("Sounds/Pathetic");
+			audioClips[(int)AUDIOCLIPS.WORSETHANSISTER] = Content.Load<SoundEffect>("Sounds/WorseThanMySister");
+			audioClips[(int)AUDIOCLIPS.Explosion] = Content.Load<SoundEffect>("Sounds/Explosion");
+			audioClips[(int)AUDIOCLIPS.NUKE] = Content.Load<SoundEffect>("Nukes");
 
 
 			pain.Add(Content.Load<SoundEffect>("Sounds/Pain"));
@@ -64,44 +95,9 @@ namespace AMON
 			MediaPlayer.Stop();
 		}
 
-		public void PlayBrilliant()
+		public void PlayAudioClip(AUDIOCLIPS clipName)
 		{
-			brilliant.Play();
-		}
-
-		public void PlaySpeech()
-		{
-			speech.Play();
-		}
-
-		public void PlayHateFalling()
-		{
-			hateFalling.Play();
-		}
-
-		public void PlayMidway()
-		{
-			midway.Play();
-		}
-
-		public void PlayPathetic()
-		{
-			pathetic.Play();
-		}
-
-		public void PlayWorseThanMySister()
-		{
-			worseThanMySister.Play();
-		}
-
-		public void PlayExplosion()
-		{
-			explosion.Play();
-		}
-
-		public void PlayNukeSound()
-		{
-			nukeSound.Play();
+			audioClips[(int)clipName].Play();
 		}
 
 		public void PlayRandomPain()
