@@ -15,9 +15,9 @@ namespace AMON
 		private int tileCount = 2;
 		Vector2[] tilePositions;
 
-		public Background(Texture2D tilingBackgroundTexture, int scrollSpeed, Viewport viewport)
+		public Background(int scrollSpeed, Viewport viewport)
 		{
-			backgroundImage = tilingBackgroundTexture;
+			backgroundImage = GraphicsManager.Instance.backgroundTexture;
 			verticalScrollSpeed = scrollSpeed;
 
 			tilePositions = new Vector2[tileCount];

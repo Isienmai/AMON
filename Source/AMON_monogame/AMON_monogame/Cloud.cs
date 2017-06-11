@@ -10,7 +10,7 @@ namespace AMON
 {
 	class Cloud : PhysicalObject
 	{
-		public Cloud(Rectangle viewportLimits, Texture2D objectSprite) : base(objectSprite)
+		public Cloud(Rectangle viewportLimits) : base(GraphicsManager.Instance.cloudTextures[new Random().Next(0,2)])
 		{
 			Random randGenerator = new Random();
 

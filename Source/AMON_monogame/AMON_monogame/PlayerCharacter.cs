@@ -22,7 +22,7 @@ namespace AMON
 		Vector2 normalSize, wetSize;
 		public float grenadeTimer;
 
-		public PlayerCharacter(Vector2 spawnLocation, Texture2D projectileSprite) : base(spawnLocation, projectileSprite)
+		public PlayerCharacter(Vector2 spawnLocation) : base(spawnLocation, GraphicsManager.Instance.charFine)
 		{
 			playerState = PlayerCharacterState.PCS_NORMAL;
 			movementSpeed = new Vector2(700, 300);
@@ -106,7 +106,7 @@ namespace AMON
 			if(grenadeTimer <= 0)
 			{
 				grenadeTimer = 2;
-				GameWorld.Instance.AddObject(new Grenade(this.GetCentre(), GameWorld.Instance.grenadeTexture));
+				GameWorld.Instance.AddObject(new Grenade(this.GetCentre()));
 			}
 		}
 

@@ -10,7 +10,7 @@ namespace AMON
 {
 	class Powerup : PhysicalObject
 	{
-		public Powerup(Vector2 SpawnLocation, Texture2D projectileSprite) : base(projectileSprite)
+		public Powerup(Vector2 SpawnLocation) : base(GraphicsManager.Instance.powerUpImage)
 		{
 			position = SpawnLocation;
 		}

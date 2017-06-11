@@ -23,6 +23,7 @@ namespace AMON
 		public Texture2D videoTexture;
 
 		public AudioManager theAudioManager;
+		public GraphicsManager theGraphicsManager;
 		
 		public Game1()
 		{
@@ -40,7 +41,7 @@ namespace AMON
 		{
 			theVideoPlayer = new VideoPlayer();
 			theAudioManager = AudioManager.Instance;
-
+			theGraphicsManager = GraphicsManager.Instance;
 			coreGameClass = GameWorld.Instance;
 			
 			bombTimer = 0;
@@ -62,10 +63,9 @@ namespace AMON
 			//Load the game audio
 			theAudioManager.LoadContent(Content);
 			//Load the game's sprites
-			coreGameClass.LoadContent(Content);
+			theGraphicsManager.LoadContent(Content);
+			
 			coreGameClass.Initialise(GraphicsDevice.Viewport);
-
-			//startHere.font1 = Content.Load<SpriteFont>("SpriteFont1");
 		}
 
 		/// <summary>
@@ -119,8 +119,8 @@ namespace AMON
 			coreGameClass.Draw(spriteBatch);
 
 			//draw titlescreen
-			if (!coreGameClass.started) spriteBatch.Draw(coreGameClass.beginMessage, new Rectangle(0, 0, 800, 480), Color.White);
-			if (coreGameClass.failed) spriteBatch.Draw(coreGameClass.failureMessage, new Rectangle(0, 0, 800, 480), Color.White);
+			if (!coreGameClass.started) spriteBatch.Draw(GraphicsManager.Instance.beginMessage, new Rectangle(0, 0, 800, 480), Color.White);
+			if (coreGameClass.failed) spriteBatch.Draw(GraphicsManager.Instance.failureMessage, new Rectangle(0, 0, 800, 480), Color.White);
 
 			//draw the ending video of a large explosion
 			if (coreGameClass.won)
@@ -141,7 +141,7 @@ namespace AMON
 					bombTimer++;
 				}
 
-				if (bombTimer >= 300) spriteBatch.Draw(coreGameClass.victoryMessage, new Rectangle(0, 0, 800, 480), Color.White);
+				if (bombTimer >= 300) spriteBatch.Draw(GraphicsManager.Instance.victoryMessage, new Rectangle(0, 0, 800, 480), Color.White);
 			}
 
 			spriteBatch.End();

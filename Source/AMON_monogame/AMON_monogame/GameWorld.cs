@@ -12,25 +12,14 @@ namespace AMON
 	{
 		private static GameWorld instance;
 
-		private Rectangle CastleLocation;
-		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public int terminalVelocity;
 		public bool started, failed, won, midwayPlayed;
-		public SpriteFont font1;
 		public int playInstance;
 		public bool poweredUp;
 		
-		public float timeElapsed;
-		
-		public Texture2D[] cloudTextures = new Texture2D[2];
+		public float timeElapsed;		
 				
-		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;
-
-		public Animation explosion;
-
-
-
-		public Texture2D grenadeTexture, rocketTexture, planeMovingRight, planeMovingLeft;
+		public int enemyRocketTimer, painTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;		
 
 		private AudioManager audioManager;
 		private CollisionManager collisionHandler;
@@ -73,55 +62,22 @@ namespace AMON
 
 			powerupTimer = 0;
 			poweredUp = false;
-			CastleLocation = new Rectangle(0, 480, 800, 480);
 			playInstance = 0;
 			planeTimer = 500;
 			midwayPlayed = false;
 			timeElapsed = 0;
 			enemyRocketTimer = 100;
 
-			thePlayer = new PlayerCharacter(new Vector2(388, 10), charFine);
+			thePlayer = new PlayerCharacter(new Vector2(388, 10));
 			allObjects.Add(thePlayer);
 
-			scrollingBackground = new Background(backgroundTexture, 60, viewport);
+			scrollingBackground = new Background(60, viewport);
 
 			terminalVelocity = 5;
 			started = false;
 			failed = false;
 			won = false;
 
-		}
-
-		public void LoadContent(ContentManager Content)
-		{
-			planeMovingRight = Content.Load<Texture2D>("Images/plane");
-			planeMovingLeft = Content.Load<Texture2D>("Images/Plane flipped");
-
-			powerUpImage = Content.Load<Texture2D>("Images/Shield");
-
-			castleImage = Content.Load<Texture2D>("Castle");
-
-			charFine = Content.Load<Texture2D>("Images/Parachute Midget");
-
-			charNotFine = Content.Load<Texture2D>("Images/Parachute midget damaged");
-
-			backgroundTexture = Content.Load<Texture2D>("Images/Background11.fw");
-			
-			beginMessage = Content.Load<Texture2D>("Images/StartupMessage");
-
-			failureMessage = Content.Load<Texture2D>("Images/FailureMessage");
-
-			victoryMessage = Content.Load<Texture2D>("Images/VictoryMessage");
-
-			cloudTextures[0] = Content.Load<Texture2D>("Images/Cloud2");
-			cloudTextures[1] = Content.Load<Texture2D>("Images/Cloud4");
-
-			grenadeTexture = Content.Load<Texture2D>("Images/Bomb");
-			rocketTexture = Content.Load<Texture2D>("Images/Rocket");
-
-			font1 = Content.Load<SpriteFont>("SpriteFont1");
-
-			explosion = new Animation(Content.Load<Texture2D>("Explosdi"), new Vector2(96, 32), 32, 32);
 		}
 
 		public void Tick(GameTime gameTime)
@@ -141,15 +97,11 @@ namespace AMON
 			}
 
 			collisionHandler.HandleCollisions(allObjects);
-
-			explosion.Update(gameTime);
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
 			scrollingBackground.Draw(spriteBatch);
-
-			spriteBatch.Draw(castleImage, CastleLocation, Color.White);
 			
 			for(int i = 0; i < allObjects.Count; ++i)
 			{
@@ -159,7 +111,7 @@ namespace AMON
 			//draw small explosion
 			if (explosionTimer > 0)
 			{
-				explosion.Draw(spriteBatch);
+				//explosion.Draw(spriteBatch);
 				explosionTimer--;
 			}
 
@@ -171,20 +123,20 @@ namespace AMON
 		{
 			if (started && !failed && !won)
 			{
-				UpdateCastle();
+				//UpdateCastle();
 				UpdatePainTimer();
 				if (timeElapsed > 10f) UpdateEnemyWeapons();
 			}
 		}
 
-		public void UpdateCastle()
+		/*public void UpdateCastle()
 		{
 			if ((timeElapsed > 59) && (CastleLocation.Y > 10))
 			{
 				CastleLocation.Y -= terminalVelocity;
 			}
 			//if (!(CastleLocation.Y > 10)) charLocation.Y += terminalVelocity;
-		}
+		}*/
 
 		public void UpdatePainTimer()
 		{
@@ -214,7 +166,7 @@ namespace AMON
 					enemyRocketTimer = 40;
 				}
 
-				allObjects.Add(new Missile(new Vector2(thePlayer.GetCentre().X, 500), rocketTexture));
+				allObjects.Add(new Missile(new Vector2(thePlayer.GetCentre().X, 500)));
 			
 			}
 			else
@@ -247,11 +199,11 @@ namespace AMON
 				//randomise direction of movement
 				if (randNumGen.Next(0, 200) < 100)
 				{
-					allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), planeMovingLeft, true));
+					allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), true));
 				}
 				else
 				{
-					allObjects.Add(new Plane(new Vector2(planeMovingRight.Width * -1, thePlayer.GetCentre().Y), planeMovingRight, false));
+					allObjects.Add(new Plane(new Vector2(GraphicsManager.Instance.planeMovingRight.Width * -1, thePlayer.GetCentre().Y),  false));
 				}
 			}
 			else
@@ -263,7 +215,7 @@ namespace AMON
 			{
 				cloudTimer = randNumGen.Next((int)timeElapsed * 4, (int)timeElapsed * 10);
 
-				allObjects.Add(new Cloud(viewport.Bounds, cloudTextures[randNumGen.Next(0,2)]));
+				allObjects.Add(new Cloud(viewport.Bounds));
 			}
 			else
 			{
@@ -378,14 +330,14 @@ namespace AMON
 		{
 			if (thePlayer.grenadeTimer > 0)
 			{
-				spriteBatch.DrawString(font1, "Wait for bomb: " + thePlayer.grenadeTimer.ToString("n2"), new Vector2(10, 10), Color.White);
+				GraphicsManager.Instance.DrawString(spriteBatch, "Wait for bomb: " + thePlayer.grenadeTimer.ToString("n2"), new Vector2(10, 10), Color.White);
 			}
 			else
 			{
-				spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
+				GraphicsManager.Instance.DrawString(spriteBatch, "Bomb Ready!", new Vector2(10, 10), Color.White);
 			}
 
-			spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
+			GraphicsManager.Instance.DrawString(spriteBatch, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
 		}
 	}
 }

@@ -45,10 +45,10 @@
     <Compile Include="AudioManager.cs" />
     <Compile Include="Background.cs" />
     <Compile Include="GameWorld.cs" />
-    <Compile Include="Bullet.cs" />
     <Compile Include="Cloud.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GraphicsManager.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Powerup.cs" />
     <Compile Include="Projectiles.cs" />
