@@ -24,7 +24,7 @@ namespace AMON
 	{
 		public Grenade(Vector2 spawnLocation, Texture2D grenadeSprite) : base(spawnLocation, grenadeSprite)
 		{
-			velocity.Y = 500;
+			velocity.Y = 300;
 		}
 
 		protected override void SpecifyCollidableTypes()

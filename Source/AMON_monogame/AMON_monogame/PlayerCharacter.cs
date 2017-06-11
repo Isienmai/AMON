@@ -20,7 +20,7 @@ namespace AMON
 		PlayerCharacterState playerState;
 		Vector2 movementSpeed, wetMovementSpeed;
 		Vector2 normalSize, wetSize;
-		float grenadeTimer;
+		public float grenadeTimer;
 
 		public PlayerCharacter(Vector2 spawnLocation, Texture2D projectileSprite) : base(spawnLocation, projectileSprite)
 		{
@@ -70,7 +70,7 @@ namespace AMON
 		//WARNING: This method is never called right now. Its parent Tick is called instead because it's in a list of <parent object>
 		public override void Tick(float deltaTime)
 		{
-			if(grenadeTimer > 0) grenadeTimer -= deltaTime;
+			if(grenadeTimer > 0) grenadeTimer -= deltaTime;			
 
 			base.Tick(deltaTime);
 		}
@@ -103,10 +103,10 @@ namespace AMON
 
 		public void DropGrenade()
 		{
-			if(grenadeTimer == 0)
+			if(grenadeTimer <= 0)
 			{
-				grenadeTimer = 5;
-				//Gonna need to alert the main game class that a grenade is to be dropped...
+				grenadeTimer = 2;
+				GameWorld.Instance.AddObject(new Grenade(this.GetCentre(), GameWorld.Instance.grenadeTexture));
 			}
 		}
 

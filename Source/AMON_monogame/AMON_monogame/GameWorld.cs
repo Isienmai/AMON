@@ -16,7 +16,7 @@ namespace AMON
 		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public int terminalVelocity;
 		public bool started, failed, won, midwayPlayed;
-		//public SpriteFont font1;
+		public SpriteFont font1;
 		public int playInstance;
 		public bool poweredUp;
 		
@@ -118,6 +118,8 @@ namespace AMON
 
 			grenadeTexture = Content.Load<Texture2D>("Images/Bomb");
 			rocketTexture = Content.Load<Texture2D>("Images/Rocket");
+
+			font1 = Content.Load<SpriteFont>("SpriteFont1");
 
 			explosion = new Animation(Content.Load<Texture2D>("Explosdi"), new Vector2(96, 32), 32, 32);
 		}
@@ -354,6 +356,10 @@ namespace AMON
 			}*/
 		}
 
+		public void AddObject(PhysicalObject objToAdd)
+		{
+			allObjects.Add(objToAdd);
+		}
 
 		public void RemoveObject(PhysicalObject objToRemove)
 		{
@@ -364,16 +370,22 @@ namespace AMON
 		{
 			failed = !victory;
 			won = victory;
+
+			audioManager.StopBackgroundMusic();
 		}
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)
 		{
-			//if ((bulletTimer < 100) && (bulletTimer > 0))
-			//	spriteBatch.DrawString(font1, "Wait for bomb: " + Convert.ToString(100 - bulletTimer), new Vector2(10, 10), Color.White);
-			//else
-			//	spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
+			if (thePlayer.grenadeTimer > 0)
+			{
+				spriteBatch.DrawString(font1, "Wait for bomb: " + thePlayer.grenadeTimer.ToString("n2"), new Vector2(10, 10), Color.White);
+			}
+			else
+			{
+				spriteBatch.DrawString(font1, "Bomb Ready!", new Vector2(10, 10), Color.White);
+			}
 
-			//spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
+			spriteBatch.DrawString(font1, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
 		}
 	}
 }
