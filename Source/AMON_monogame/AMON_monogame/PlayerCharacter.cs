@@ -55,7 +55,7 @@ namespace AMON
 			if (other is Projectile)
 			{
 				AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.PATHETIC);
-				//destroy object
+				Destroy();
 			}
 			else if (other is Cloud)
 			{
@@ -120,6 +120,12 @@ namespace AMON
 			{
 				dimensions = normalSize;
 			}
+		}
+
+		public override void Destroy()
+		{
+			GameWorld.Instance.EndGame(false);
+			base.Destroy();
 		}
 	}
 }

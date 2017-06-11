@@ -13,7 +13,7 @@ namespace AMON
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
-		BaseClass coreGameClass;
+		GameWorld coreGameClass;
 		
 		int bombTimer;
 		bool bombPlayed = false;
@@ -41,7 +41,7 @@ namespace AMON
 			theVideoPlayer = new VideoPlayer();
 			theAudioManager = AudioManager.Instance;
 
-			coreGameClass = new BaseClass(GraphicsDevice.Viewport);
+			coreGameClass = GameWorld.Instance;
 			
 			bombTimer = 0;
 
@@ -63,7 +63,7 @@ namespace AMON
 			theAudioManager.LoadContent(Content);
 			//Load the game's sprites
 			coreGameClass.LoadContent(Content);
-			coreGameClass.Initialise();
+			coreGameClass.Initialise(GraphicsDevice.Viewport);
 
 			//startHere.font1 = Content.Load<SpriteFont>("SpriteFont1");
 		}

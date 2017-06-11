@@ -8,8 +8,10 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AMON
 {
-	class BaseClass
+	class GameWorld
 	{
+		private static GameWorld instance;
+
 		private Rectangle CastleLocation;
 		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public int terminalVelocity;
@@ -42,15 +44,29 @@ namespace AMON
 
 		private Random randNumGen;
 
-		public BaseClass(Viewport viewSize)
+		public static GameWorld Instance
 		{
-			viewport = viewSize;
+			get 
+			{
+				if(instance == null)
+				{
+					instance = new GameWorld();
+				}
+
+				return instance;
+			}
+		}
+
+		private GameWorld()
+		{
 			audioManager = AudioManager.Instance;
 			collisionHandler = new CollisionManager();
 		}
 
-		public void Initialise()
+		public void Initialise(Viewport viewSize)
 		{
+			viewport = viewSize;
+
 			randNumGen = new Random();
 
 			allObjects = new List<PhysicalObject>();
@@ -304,7 +320,7 @@ namespace AMON
 
 			if (keybState.IsKeyDown(Keys.Escape)) return 1;
 			if ((keybState.IsKeyDown(Keys.Back)) && ((failed) || (won))) return 1;
-			if ((keybState.IsKeyDown(Keys.Enter)) && ((failed) || (won))) Initialise();
+			if ((keybState.IsKeyDown(Keys.Enter)) && ((failed) || (won))) Initialise(viewport);
 
 			return 0;
 		}
@@ -339,21 +355,15 @@ namespace AMON
 		}
 
 
-		private void HandleObjectCollisions()
+		public void RemoveObject(PhysicalObject objToRemove)
 		{
-			collisionHandler.HandleCollisions(allObjects);
-			List<Point> detectedCollisions = new List<Point>();
-			for (int i = 0; i < allObjects.Count; ++i)
-			{
-				for (int j = i; j < allObjects.Count; ++j)
-				{
-					if(allObjects[i].Collided(allObjects[j]))
-					{
-						allObjects[i].ReactToCollision(allObjects[j]);
-						allObjects[j].ReactToCollision(allObjects[i]);
-					}
-				}
-			}
+			allObjects.Remove(objToRemove);
+		}
+
+		public void EndGame(bool victory)
+		{
+			failed = !victory;
+			won = victory;
 		}
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)

@@ -16,7 +16,7 @@ namespace AMON
 		{
 			AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.Explosion);
 			//Play explosion graphic
-			//Mark object for destruction
+			Destroy();
 		}		
 	}
 

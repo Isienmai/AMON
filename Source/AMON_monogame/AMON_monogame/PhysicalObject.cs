@@ -101,5 +101,10 @@ namespace AMON
 			drawDest.Height = (int)(dimensions.Y + 0.5f);
 			spriteBatch.Draw(sprite, drawDest, drawColour);
 		}
+
+		public virtual void Destroy()
+		{
+			GameWorld.Instance.RemoveObject(this);
+		}
 	}
 }
