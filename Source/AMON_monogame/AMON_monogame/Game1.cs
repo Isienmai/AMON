@@ -5,6 +5,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AMON
 {
+	public enum GAME_STATE
+	{
+		MAIN_MENU = 0,
+		PLAYING,
+		GAME_LOST,
+		GAME_WON
+	}
+
 	/// <summary>
 	/// This is the main type for your game.
 	/// </summary>
@@ -14,17 +22,12 @@ namespace AMON
 		SpriteBatch spriteBatch;
 
 		GameWorld coreGameClass;
-		
-		int bombTimer;
-		bool bombPlayed = false;
-		bool finalNukePlayed = false;
 
-		public VideoPlayer theVideoPlayer;
-		public Texture2D videoTexture;
+		AudioManager theAudioManager;
+		GraphicsManager theGraphicsManager;
 
-		public AudioManager theAudioManager;
-		public GraphicsManager theGraphicsManager;
-		
+		GAME_STATE currentGameState;
+
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
@@ -39,12 +42,11 @@ namespace AMON
 		/// </summary>
 		protected override void Initialize()
 		{
-			theVideoPlayer = new VideoPlayer();
 			theAudioManager = AudioManager.Instance;
 			theGraphicsManager = GraphicsManager.Instance;
 			coreGameClass = GameWorld.Instance;
-			
-			bombTimer = 0;
+
+			currentGameState = GAME_STATE.MAIN_MENU;
 
 			base.Initialize();
 		}
@@ -63,9 +65,7 @@ namespace AMON
 			//Load the game audio
 			theAudioManager.LoadContent(Content);
 			//Load the game's sprites
-			theGraphicsManager.LoadContent(Content);
-			
-			coreGameClass.Initialise(GraphicsDevice.Viewport);
+			theGraphicsManager.LoadContent(Content);			
 		}
 
 		/// <summary>
@@ -84,26 +84,42 @@ namespace AMON
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
-			//Exit the game if requested
-			if (coreGameClass.CheckInput() == 1) Exit();
-			
-			coreGameClass.Tick(gameTime);
-
-			if ((!bombPlayed) && (coreGameClass.won))
+			ReceiveInput();
+			if(currentGameState == GAME_STATE.PLAYING)
 			{
-				theVideoPlayer.IsLooped = true;
-				//player.Play(video1);
-				bombPlayed = true;
-			}
-
-			//most innefficient botched attempt at bug-fixing ever attempted by mankind.
-			if (!coreGameClass.won)
-			{
-				finalNukePlayed = false;
-				bombPlayed = false;
+				coreGameClass.Tick(gameTime);
 			}
 
 			base.Update(gameTime);
+		}
+
+		private void ReceiveInput()
+		{
+			KeyboardState keybState = Keyboard.GetState();
+
+			if (keybState.IsKeyDown(Keys.Escape)) Exit();
+
+			switch(currentGameState)
+			{
+				case GAME_STATE.PLAYING:
+					int horizMotion = 0, verticMotion = 0;
+					if (keybState.IsKeyDown(Keys.Up)) verticMotion -= 1;
+					if (keybState.IsKeyDown(Keys.Down)) verticMotion += 1;
+					if (keybState.IsKeyDown(Keys.Left)) horizMotion -= 1;
+					if (keybState.IsKeyDown(Keys.Right)) horizMotion += 1;
+
+					coreGameClass.UpdatePlayerInput(horizMotion, verticMotion, keybState.IsKeyDown(Keys.Space));
+					break;
+				case GAME_STATE.MAIN_MENU:
+				case GAME_STATE.GAME_LOST:
+				case GAME_STATE.GAME_WON:
+					if (keybState.IsKeyDown(Keys.Back)) Exit();
+					if (keybState.IsKeyDown(Keys.Enter))
+					{
+						SetState(GAME_STATE.PLAYING);
+					}
+					break;
+			}
 		}
 
 		/// <summary>
@@ -116,37 +132,67 @@ namespace AMON
 
 			spriteBatch.Begin();
 
-			coreGameClass.Draw(spriteBatch);
-
-			//draw titlescreen
-			if (!coreGameClass.started) spriteBatch.Draw(GraphicsManager.Instance.beginMessage, new Rectangle(0, 0, 800, 480), Color.White);
-			if (coreGameClass.failed) spriteBatch.Draw(GraphicsManager.Instance.failureMessage, new Rectangle(0, 0, 800, 480), Color.White);
-
-			//draw the ending video of a large explosion
-			if (coreGameClass.won)
+			switch(currentGameState)
 			{
-				if (theVideoPlayer.State != MediaState.Stopped)
-				{
-					videoTexture = theVideoPlayer.GetTexture();
-				}
-
-				if ((videoTexture != null) && (bombTimer <= 320))
-				{
-					spriteBatch.Draw(videoTexture, GraphicsDevice.Viewport.Bounds, Color.White);
-					if (!finalNukePlayed)
-					{
-						theAudioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.NUKE);
-						finalNukePlayed = true;
-					}
-					bombTimer++;
-				}
-
-				if (bombTimer >= 300) spriteBatch.Draw(GraphicsManager.Instance.victoryMessage, new Rectangle(0, 0, 800, 480), Color.White);
+				case GAME_STATE.MAIN_MENU:
+					spriteBatch.Draw(GraphicsManager.Instance.beginMessage, new Rectangle(0, 0, 800, 480), Color.White);
+					break;
+				case GAME_STATE.PLAYING:
+					coreGameClass.Draw(spriteBatch);
+					break;
+				case GAME_STATE.GAME_LOST:
+					spriteBatch.Draw(GraphicsManager.Instance.failureMessage, new Rectangle(0, 0, 800, 480), Color.White);
+					break;
+				case GAME_STATE.GAME_WON:
+					spriteBatch.Draw(GraphicsManager.Instance.victoryMessage, new Rectangle(0, 0, 800, 480), Color.White);
+					break;
 			}
 
 			spriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+
+		public void SetState(GAME_STATE newState)
+		{
+			ExitState(currentGameState);
+			EnterState(newState);
+			currentGameState = newState;
+		}
+
+		private void EnterState(GAME_STATE state)
+		{
+			switch(state)
+			{
+				case GAME_STATE.MAIN_MENU:
+					break;
+				case GAME_STATE.PLAYING:
+					coreGameClass.Initialise(GraphicsDevice.Viewport, this);
+					theAudioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HATEFALLING);
+					theAudioManager.StartBackgroundMusic();
+					break;
+				case GAME_STATE.GAME_LOST:
+					break;
+				case GAME_STATE.GAME_WON:
+					theAudioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.TAUNT);
+					break;
+			}
+		}
+
+		private void ExitState(GAME_STATE state)
+		{
+			switch (state)
+			{
+				case GAME_STATE.MAIN_MENU:
+					break;
+				case GAME_STATE.PLAYING:
+					theAudioManager.StopBackgroundMusic();
+					break;
+				case GAME_STATE.GAME_LOST:
+					break;
+				case GAME_STATE.GAME_WON:
+					break;
+			}
 		}
 	}
 }

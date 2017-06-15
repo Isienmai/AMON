@@ -70,7 +70,7 @@ namespace AMON
 		//WARNING: This method is never called right now. Its parent Tick is called instead because it's in a list of <parent object>
 		public override void Tick(float deltaTime)
 		{
-			if(grenadeTimer > 0) grenadeTimer -= deltaTime;			
+			if(grenadeTimer > 0) grenadeTimer -= deltaTime;
 
 			base.Tick(deltaTime);
 		}

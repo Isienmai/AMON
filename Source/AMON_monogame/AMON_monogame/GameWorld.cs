@@ -12,7 +12,7 @@ namespace AMON
 	{
 		private static GameWorld instance;
 		
-		public bool started, failed, won, midwayPlayed;
+		public bool midwayPlayed;
 		public int playInstance;
 		
 		public float timeElapsed;
@@ -30,6 +30,8 @@ namespace AMON
 		private Background scrollingBackground;
 
 		private Random randNumGen;
+
+		private Game1 upperGameClass;
 
 		public static GameWorld Instance
 		{
@@ -50,9 +52,10 @@ namespace AMON
 			collisionHandler = new CollisionManager();
 		}
 
-		public void Initialise(Viewport viewSize)
+		public void Initialise(Viewport viewSize, Game1 coreGameClass)
 		{
 			viewport = viewSize;
+			upperGameClass = coreGameClass;
 
 			randNumGen = new Random();
 
@@ -69,21 +72,18 @@ namespace AMON
 			allObjects.Add(thePlayer);
 
 			scrollingBackground = new Background(60, viewport);
-			
-			started = false;
-			failed = false;
-			won = false;
-
 		}
 
 		public void Tick(GameTime gameTime)
 		{
-			if (started) timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+			timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
 
-			CheckAll();
-			UpdateAll();
+			CheckTime();
+			CheckWallCollision();
+			CheckTimer();
+			if (timeElapsed > 3f) UpdateEnemyWeapons();
 
 			scrollingBackground.Tick(dt);
 
@@ -113,25 +113,7 @@ namespace AMON
 
 			//display grenade cooldown
 			DrawGrenadeCooldown(spriteBatch);
-		}
-
-		public void UpdateAll()
-		{
-			if (started && !failed && !won)
-			{
-				//UpdateCastle();
-				if (timeElapsed > 10f) UpdateEnemyWeapons();
-			}
-		}
-
-		/*public void UpdateCastle()
-		{
-			if ((timeElapsed > 59) && (CastleLocation.Y > 10))
-			{
-				CastleLocation.Y -= terminalVelocity;
-			}
-			//if (!(CastleLocation.Y > 10)) charLocation.Y += terminalVelocity;
-		}*/
+		}	
 				
 		public void UpdateEnemyWeapons()
 		{
@@ -213,60 +195,25 @@ namespace AMON
 			}
 		}
 
-		public void CheckAll()
-		{
-			if (!failed && !won)
-			{
-				CheckTime();
-				CheckWallCollision();
-				CheckTimer();
-			}
-		}
-
 		public void CheckTime()
 		{
-			if ((timeElapsed > 60f) && !failed)
+			if ((timeElapsed > 60f))
 			{
-				won = true;
-				audioManager.StopBackgroundMusic();
-				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.TAUNT);
-				timeElapsed = 0;
+				upperGameClass.SetState(GAME_STATE.GAME_WON);
 			}
 
-			if ((timeElapsed > 30f) && (!midwayPlayed))
+			if ((timeElapsed > 30f) && !midwayPlayed)
 			{
 				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
 				midwayPlayed = true;
 			}
 		}
 
-		public int CheckInput()
+		public void UpdatePlayerInput(int horizontalMotion, int verticalMotion, bool dropBomb)
 		{
-			KeyboardState keybState = Keyboard.GetState();
-			if (started && !failed)
-			{
-				int horizMotion = 0, verticMotion = 0;
-				if (keybState.IsKeyDown(Keys.Up)) verticMotion -= 1;
-				if (keybState.IsKeyDown(Keys.Down)) verticMotion += 1;
-				if (keybState.IsKeyDown(Keys.Left)) horizMotion -= 1;
-				if (keybState.IsKeyDown(Keys.Right)) horizMotion += 1;
+			thePlayer.MovePlayer(horizontalMotion, verticalMotion);
 
-				thePlayer.MovePlayer(horizMotion, verticMotion);
-
-				if (keybState.IsKeyDown(Keys.Space)) thePlayer.DropGrenade();
-			}
-			else if ((keybState.IsKeyDown(Keys.Enter)) && !started)
-			{
-				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HATEFALLING);
-				started = true;
-				audioManager.StartBackgroundMusic();
-			}
-
-			if (keybState.IsKeyDown(Keys.Escape)) return 1;
-			if ((keybState.IsKeyDown(Keys.Back)) && ((failed) || (won))) return 1;
-			if ((keybState.IsKeyDown(Keys.Enter)) && ((failed) || (won))) Initialise(viewport);
-
-			return 0;
+			if (dropBomb) thePlayer.DropGrenade();
 		}
 
 		public void CheckWallCollision()
@@ -310,10 +257,14 @@ namespace AMON
 
 		public void EndGame(bool victory)
 		{
-			failed = !victory;
-			won = victory;
-
-			audioManager.StopBackgroundMusic();
+			if(victory)
+			{
+				upperGameClass.SetState(GAME_STATE.GAME_WON);
+			}
+			else
+			{
+				upperGameClass.SetState(GAME_STATE.GAME_LOST);
+			}
 		}
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)
