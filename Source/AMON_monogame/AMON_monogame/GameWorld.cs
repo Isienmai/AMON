@@ -190,7 +190,7 @@ namespace AMON
 
 			if(cloudTimer == 0)
 			{
-				cloudTimer = randNumGen.Next((int)timeElapsed * 4, (int)timeElapsed * 10);
+				cloudTimer = randNumGen.Next((61-(int)timeElapsed) * 4, (61 - (int)timeElapsed) * 10);
 
 				allObjects.Add(new Cloud(viewport.Bounds));
 			}
