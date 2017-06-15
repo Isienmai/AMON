@@ -76,16 +76,26 @@ namespace AMON
 			//Return no collision if the other object cannot collide with this one
 			if (ignoreOther && collidableTypes.Count != 0) return false;
 
+			return Collided(other.position, other.dimensions);
+		}
+
+		public bool Collided(Rectangle otherBounds)
+		{
+			return Collided(new Vector2(otherBounds.Location.X, otherBounds.Location.Y), new Vector2(otherBounds.Width, otherBounds.Height));
+		}
+
+		private bool Collided(Vector2 otherPosition, Vector2 otherDimensions)
+		{
 			//Check if the two rectangles overlap horizontally
-			float overallWidth = (other.position.X + other.dimensions.X) - this.position.X;
-			float combinedWidth = other.dimensions.X + this.dimensions.X;
+			float overallWidth = (otherPosition.X + otherDimensions.X) - this.position.X;
+			float combinedWidth = otherDimensions.X + this.dimensions.X;
 
 			if (overallWidth < 0) return false;
 			if (overallWidth > combinedWidth) return false;
 
 			//Check if they overlap vertically
-			float overallHeight = (other.position.Y + other.dimensions.Y) - position.Y;
-			float combinedHeight = other.dimensions.Y + this.dimensions.Y;
+			float overallHeight = (otherPosition.Y + otherDimensions.Y) - this.position.Y;
+			float combinedHeight = otherDimensions.Y + this.dimensions.Y;
 
 			if (overallHeight < 0) return false;
 			if (overallHeight > combinedHeight) return false;

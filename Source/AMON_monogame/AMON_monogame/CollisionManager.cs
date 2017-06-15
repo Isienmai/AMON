@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace AMON
 {
@@ -40,7 +41,7 @@ namespace AMON
 			detectedCollisions = new List<CollisionDetection>();
 		}
 
-		public void HandleCollisions(List<PhysicalObject> worldObjects)
+		public void HandleCollisions(List<PhysicalObject> worldObjects, Rectangle worldBounds)
 		{
 			//Create a list of all collisions
 			List<CollisionDetection> currentCollisions = new List<CollisionDetection>();
@@ -48,7 +49,11 @@ namespace AMON
 			{
 				for (int j = i; j < worldObjects.Count; ++j)
 				{
-					if (worldObjects[i].Collided(worldObjects[j]))
+					if(!worldObjects[j].Collided(worldBounds))
+					{
+						worldObjects[j].Destroy();
+					}
+					else if (worldObjects[i].Collided(worldObjects[j]))
 					{
 						CollisionDetection newCollision = new CollisionDetection(worldObjects[i], worldObjects[j]);
 						currentCollisions.Add(newCollision);

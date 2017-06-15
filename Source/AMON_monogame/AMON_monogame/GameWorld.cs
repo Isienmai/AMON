@@ -13,7 +13,6 @@ namespace AMON
 		private static GameWorld instance;
 		
 		public bool midwayPlayed;
-		public int playInstance;
 		
 		public float timeElapsed;
 				
@@ -24,6 +23,7 @@ namespace AMON
 
 		private List<PhysicalObject> allObjects;
 		private Viewport viewport;
+		private Rectangle worldBounds;
 
 		private PlayerCharacter thePlayer;
 
@@ -55,6 +55,11 @@ namespace AMON
 		public void Initialise(Viewport viewSize, Game1 coreGameClass)
 		{
 			viewport = viewSize;
+			worldBounds = viewport.Bounds;
+
+			worldBounds.Location -= new Point(100, 100);
+			worldBounds.Size += new Point(200, 200);
+
 			upperGameClass = coreGameClass;
 
 			randNumGen = new Random();
@@ -62,7 +67,6 @@ namespace AMON
 			allObjects = new List<PhysicalObject>();
 
 			powerupTimer = 0;
-			playInstance = 0;
 			planeTimer = 500;
 			midwayPlayed = false;
 			timeElapsed = 0;
@@ -92,7 +96,7 @@ namespace AMON
 				allObjects[i].Tick(dt);
 			}
 
-			collisionHandler.HandleCollisions(allObjects);
+			collisionHandler.HandleCollisions(allObjects, worldBounds);
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
@@ -279,6 +283,9 @@ namespace AMON
 			}
 
 			GraphicsManager.Instance.DrawString(spriteBatch, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
+
+			//Debug the out of bounds object removal
+			//GraphicsManager.Instance.DrawString(spriteBatch, "Object Count:" + Convert.ToString(allObjects.Count), new Vector2(450, 20), Color.Blue);
 		}
 	}
 }

@@ -22,8 +22,8 @@ namespace AMON
 			dimensions.Y = height;
 
 			//Put the cloud in a random location
-			position.X = randGenerator.Next(0, 800 - width);
-			position.Y = randGenerator.Next(480, 700);
+			position.X = randGenerator.Next(-100, viewportLimits.Width - width);
+			position.Y = randGenerator.Next(viewportLimits.Height, viewportLimits.Height + 90);
 
 			velocity.Y = -300;
 
