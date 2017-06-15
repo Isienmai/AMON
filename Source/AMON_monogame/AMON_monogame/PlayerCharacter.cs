@@ -139,6 +139,15 @@ namespace AMON
 			base.Destroy();
 		}
 
+		public void KeepWithinBounds(Rectangle bounds)
+		{
+			if (position.X < bounds.Location.X) position.X = bounds.Location.X;
+			if (position.Y < bounds.Location.Y) position.Y = bounds.Location.Y;
+
+			if (position.X + dimensions.X > bounds.Location.X + bounds.Width) position.X = (bounds.Location.X + bounds.Width) - dimensions.X;
+			if (position.Y + dimensions.Y > bounds.Location.Y + bounds.Height) position.Y = (bounds.Location.Y + bounds.Height) - dimensions.Y;
+		}
+
 		public void SetState(PLAYER_STATE newState)
 		{
 			ExitState(playerState);
