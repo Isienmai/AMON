@@ -14,7 +14,7 @@ namespace AMON
 
 		public override void ReactToCollisionEntry(PhysicalObject other)
 		{
-			AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.Explosion);
+			AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.EXPLOSION);
 			//Play explosion graphic
 			Destroy();
 		}		
@@ -69,7 +69,11 @@ namespace AMON
 
 		public override void ReactToCollisionEntry(PhysicalObject other)
 		{
-			if (other is Missile) AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.BRILLIANT);
+			if (other is Missile)
+			{
+				GameWorld.Instance.AddObject(new Powerup(this.GetCentre()));
+				AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.BRILLIANT);
+			}
 
 			base.ReactToCollisionEntry(other);
 		}

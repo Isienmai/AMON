@@ -21,7 +21,7 @@ namespace AMON
 			HOWLONG,
 			PATHETIC,
 			WORSETHANSISTER,
-			Explosion,
+			EXPLOSION,
 			NUKE,
 			COUNT
 		}
@@ -62,7 +62,7 @@ namespace AMON
 			audioClips[(int)AUDIOCLIPS.HOWLONG] = Content.Load<SoundEffect>("Sounds/HowLongUntilIWin");
 			audioClips[(int)AUDIOCLIPS.PATHETIC] = Content.Load<SoundEffect>("Sounds/Pathetic");
 			audioClips[(int)AUDIOCLIPS.WORSETHANSISTER] = Content.Load<SoundEffect>("Sounds/WorseThanMySister");
-			audioClips[(int)AUDIOCLIPS.Explosion] = Content.Load<SoundEffect>("Sounds/Explosion");
+			audioClips[(int)AUDIOCLIPS.EXPLOSION] = Content.Load<SoundEffect>("Sounds/Explosion");
 			audioClips[(int)AUDIOCLIPS.NUKE] = Content.Load<SoundEffect>("Nukes");
 
 

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
-	enum PlayerCharacterState
+	enum PLAYER_STATE
 	{
 		PCS_NORMAL,
 		PCS_WET,
@@ -17,20 +17,33 @@ namespace AMON
 
 	class PlayerCharacter : PhysicalObject
 	{
-		PlayerCharacterState playerState;
-		Vector2 movementSpeed, wetMovementSpeed;
+		PLAYER_STATE playerState;
+		Vector2 currentSpeed, normalSpeed, wetMovementSpeed;
 		Vector2 normalSize, wetSize;
+		Color normalColour, wetColour, poweredUpColour;
 		public float grenadeTimer;
+
+		float wetTimer;
 
 		public PlayerCharacter(Vector2 spawnLocation) : base(spawnLocation, GraphicsManager.Instance.charFine)
 		{
-			playerState = PlayerCharacterState.PCS_NORMAL;
-			movementSpeed = new Vector2(700, 300);
-			normalSize = new Vector2(38, 46);
+			normalSpeed = new Vector2(700, 300);
 			wetMovementSpeed = new Vector2(400, 100);
+
+			normalSize = new Vector2(38, 46);
 			wetSize = new Vector2(26, 50);
+
+			normalColour = Color.White;
+			wetColour = Color.Aquamarine;
+			poweredUpColour = Color.Gray;
+
+			playerState = PLAYER_STATE.PCS_NORMAL;
+			currentSpeed = normalSpeed;
+			dimensions = normalSize;
+			drawColour = normalColour;
+
 			grenadeTimer = 0;
-			UpdateCollider();
+			wetTimer = 0;
 		}
 
 		protected override void SpecifyCollidableTypes()
@@ -38,14 +51,26 @@ namespace AMON
 			collidableTypes.Add(typeof(Missile));
 			collidableTypes.Add(typeof(Plane));
 			collidableTypes.Add(typeof(Cloud));
-			//collidableTypes.Add(typeof(Powerup));
+			collidableTypes.Add(typeof(Powerup));
 		}
 
 		public override void ReactToCollision(PhysicalObject other)
-		{			
-			if(other is Cloud)
+		{
+			if (other is Cloud)
 			{
-				//try to switch to damp
+				switch (playerState)
+				{
+					case PLAYER_STATE.PCS_NORMAL:
+						AudioManager.Instance.PlayRandomPain();
+						SetState(PLAYER_STATE.PCS_WET);
+						break;
+					case PLAYER_STATE.PCS_WET:
+						//Keep the timer at max whilst inside a cloud
+						wetTimer = 3;
+						break;
+					case PLAYER_STATE.PCS_POWEREDUP:
+						break;
+				}
 			}
 		}
 
@@ -54,23 +79,32 @@ namespace AMON
 			//Look into IDictionary and the Visitor pattern as possible alternatives to these if/else statements
 			if (other is Projectile)
 			{
-				AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.PATHETIC);
-				Destroy();
+				switch(playerState)
+				{
+					case PLAYER_STATE.PCS_NORMAL:
+					case PLAYER_STATE.PCS_WET:
+						AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.PATHETIC);
+						Destroy();
+						break;
+					case PLAYER_STATE.PCS_POWEREDUP:
+						AudioManager.Instance.PlayRandomPain();
+						SetState(PLAYER_STATE.PCS_NORMAL);
+						break;
+				}
 			}
-			else if (other is Cloud)
+			else if(other is Powerup)
 			{
-				AudioManager.Instance.PlayRandomPain();
+				SetState(PLAYER_STATE.PCS_POWEREDUP);
 			}
-			/*else if(other is Powerup)
-			{
-				//switch to powered up state
-			}*/
 		}
 
 		//WARNING: This method is never called right now. Its parent Tick is called instead because it's in a list of <parent object>
 		public override void Tick(float deltaTime)
 		{
-			if(grenadeTimer > 0) grenadeTimer -= deltaTime;
+			if (grenadeTimer > 0) grenadeTimer -= deltaTime;
+			if (wetTimer > 0) wetTimer -= deltaTime;
+
+			if (wetTimer <= 0 && playerState == PLAYER_STATE.PCS_WET) SetState(PLAYER_STATE.PCS_NORMAL);
 
 			base.Tick(deltaTime);
 		}
@@ -86,19 +120,8 @@ namespace AMON
 			if (horizontalMovement != 0) horizontalMovement = horizontalMovement / Math.Abs(horizontalMovement);
 			if (verticalMovement != 0) verticalMovement = verticalMovement / Math.Abs(verticalMovement);
 
-			//update velocity
-			switch(playerState)
-			{
-				case PlayerCharacterState.PCS_NORMAL:
-				case PlayerCharacterState.PCS_POWEREDUP:
-					velocity.X = movementSpeed.X * horizontalMovement;
-					velocity.Y = movementSpeed.Y * verticalMovement;
-					break;
-				case PlayerCharacterState.PCS_WET:
-					velocity.X = wetMovementSpeed.X * horizontalMovement;
-					velocity.Y = wetMovementSpeed.Y * verticalMovement;
-					break;
-			}
+			velocity.X = currentSpeed.X * horizontalMovement;
+			velocity.Y = currentSpeed.Y * verticalMovement;
 		}
 
 		public void DropGrenade()
@@ -110,22 +133,60 @@ namespace AMON
 			}
 		}
 
-		private void UpdateCollider()
-		{
-			if(playerState == PlayerCharacterState.PCS_WET)
-			{
-				dimensions = wetSize;
-			}
-			else
-			{
-				dimensions = normalSize;
-			}
-		}
-
 		public override void Destroy()
 		{
 			GameWorld.Instance.EndGame(false);
 			base.Destroy();
+		}
+
+		public void SetState(PLAYER_STATE newState)
+		{
+			ExitState(playerState);
+			EnterState(newState);
+			playerState = newState;
+		}
+
+		private void EnterState(PLAYER_STATE state)
+		{
+			switch (state)
+			{
+				case PLAYER_STATE.PCS_NORMAL:
+					currentSpeed = normalSpeed;
+
+					sprite = GraphicsManager.Instance.charFine;
+					dimensions = normalSize;
+					drawColour = normalColour;
+					break;
+				case PLAYER_STATE.PCS_WET:
+					currentSpeed = wetMovementSpeed;
+
+					sprite = GraphicsManager.Instance.charNotFine;
+					dimensions = wetSize;
+					drawColour = wetColour;
+
+					wetTimer = 3;
+					break;
+				case PLAYER_STATE.PCS_POWEREDUP:
+					currentSpeed = normalSpeed;
+
+					sprite = GraphicsManager.Instance.charFine;
+					dimensions = normalSize;
+					drawColour = poweredUpColour;
+					break;
+			}
+		}
+
+		private void ExitState(PLAYER_STATE state)
+		{
+			switch (state)
+			{
+				case PLAYER_STATE.PCS_NORMAL:
+					break;
+				case PLAYER_STATE.PCS_WET:
+					break;
+				case PLAYER_STATE.PCS_POWEREDUP:
+					break;
+			}
 		}
 	}
 }
