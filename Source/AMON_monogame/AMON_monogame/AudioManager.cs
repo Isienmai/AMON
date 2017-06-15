@@ -65,8 +65,7 @@ namespace AMON
 			audioClips[(int)AUDIOCLIPS.EXPLOSION] = Content.Load<SoundEffect>("Sounds/Explosion");
 			audioClips[(int)AUDIOCLIPS.NUKE] = Content.Load<SoundEffect>("Nukes");
 
-
-			pain.Add(Content.Load<SoundEffect>("Sounds/Pain"));
+			
 			pain.Add(Content.Load<SoundEffect>("Sounds/Pain1"));
 			pain.Add(Content.Load<SoundEffect>("Sounds/Pain2"));
 			pain.Add(Content.Load<SoundEffect>("Sounds/Pain3"));
