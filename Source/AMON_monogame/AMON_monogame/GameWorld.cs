@@ -276,9 +276,9 @@ namespace AMON
 
 		public void DrawGrenadeCooldown(SpriteBatch spriteBatch)
 		{
-			if (thePlayer.grenadeTimer > 0)
+			if (!thePlayer.grenadesActive)
 			{
-				GraphicsManager.Instance.DrawString(spriteBatch, "Wait for bomb: " + thePlayer.grenadeTimer.ToString("n2"), new Vector2(10, 10), Color.White);
+				GraphicsManager.Instance.DrawString(spriteBatch, "Waiting for bomb...", new Vector2(10, 10), Color.White);
 			}
 			else
 			{

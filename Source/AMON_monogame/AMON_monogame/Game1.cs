@@ -25,6 +25,7 @@ namespace AMON
 
 		AudioManager theAudioManager;
 		GraphicsManager theGraphicsManager;
+		EventManager theEventManager;
 
 		GAME_STATE currentGameState;
 
@@ -45,6 +46,7 @@ namespace AMON
 			theAudioManager = AudioManager.Instance;
 			theGraphicsManager = GraphicsManager.Instance;
 			coreGameClass = GameWorld.Instance;
+			theEventManager = EventManager.Instance;
 
 			currentGameState = GAME_STATE.MAIN_MENU;
 
@@ -87,8 +89,11 @@ namespace AMON
 			ReceiveInput();
 			if(currentGameState == GAME_STATE.PLAYING)
 			{
+				float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
 				coreGameClass.Tick(gameTime);
-				theGraphicsManager.Tick(gameTime);
+
+				theGraphicsManager.Tick(dt);
+				theEventManager.Tick(dt);
 			}
 
 			base.Update(gameTime);

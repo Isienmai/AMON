@@ -79,10 +79,8 @@ namespace AMON
 			animations.Clear();
 		}
 
-		public void Tick(GameTime gameTime)
+		public void Tick(float dt)
 		{
-			float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
-
 			for (int i = 0; i < animations.Count; ++i)
 			{
 				animations[i].Update(dt);

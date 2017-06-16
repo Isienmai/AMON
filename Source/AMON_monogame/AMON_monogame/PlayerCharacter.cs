@@ -20,9 +20,9 @@ namespace AMON
 		PLAYER_STATE playerState;
 		Vector2 currentSpeed, normalSpeed, wetMovementSpeed;
 		Vector2 normalSize, wetSize;
-		public float grenadeTimer;
+		public bool grenadesActive;
 
-		float wetTimer;
+		EventTimer dampnessTimer;
 
 		public PlayerCharacter(Vector2 spawnLocation) : base(spawnLocation, GraphicsManager.Instance.charFine)
 		{
@@ -36,8 +36,7 @@ namespace AMON
 			currentSpeed = normalSpeed;
 			dimensions = normalSize;
 
-			grenadeTimer = 0;
-			wetTimer = 0;
+			grenadesActive = true;
 		}
 
 		protected override void SpecifyCollidableTypes()
@@ -60,7 +59,10 @@ namespace AMON
 						break;
 					case PLAYER_STATE.PCS_WET:
 						//Keep the timer at max whilst inside a cloud
-						wetTimer = 3;
+						if(dampnessTimer != null)
+						{
+							dampnessTimer.ResetTimer();
+						}
 						break;
 					case PLAYER_STATE.PCS_POWEREDUP:
 						break;
@@ -92,14 +94,8 @@ namespace AMON
 			}
 		}
 
-		//WARNING: This method is never called right now. Its parent Tick is called instead because it's in a list of <parent object>
 		public override void Tick(float deltaTime)
 		{
-			if (grenadeTimer > 0) grenadeTimer -= deltaTime;
-			if (wetTimer > 0) wetTimer -= deltaTime;
-
-			if (wetTimer <= 0 && playerState == PLAYER_STATE.PCS_WET) SetState(PLAYER_STATE.PCS_NORMAL);
-
 			base.Tick(deltaTime);
 		}
 
@@ -120,10 +116,11 @@ namespace AMON
 
 		public void DropGrenade()
 		{
-			if(grenadeTimer <= 0)
+			if(grenadesActive)
 			{
-				grenadeTimer = 2;
 				GameWorld.Instance.AddObject(new Grenade(this.GetCentre()));
+				grenadesActive = false;
+				EventManager.Instance.AddTimer(2.0f, new TimedEvent(EventEnableGrenades));
 			}
 		}
 
@@ -131,6 +128,17 @@ namespace AMON
 		{
 			GameWorld.Instance.EndGame(false);
 			base.Destroy();
+		}
+
+		public void EventStopDamp()
+		{
+			if (playerState == PLAYER_STATE.PCS_WET) SetState(PLAYER_STATE.PCS_NORMAL);
+			dampnessTimer = null;
+		}
+
+		public void EventEnableGrenades()
+		{			
+			grenadesActive = true;
 		}
 
 		public void KeepWithinBounds(Rectangle bounds)
@@ -165,7 +173,7 @@ namespace AMON
 					sprite = GraphicsManager.Instance.charNotFine;
 					dimensions = wetSize;
 
-					wetTimer = 3;
+					dampnessTimer = EventManager.Instance.AddTimer(3.0f, new TimedEvent(EventStopDamp));
 					break;
 				case PLAYER_STATE.PCS_POWEREDUP:
 					currentSpeed = normalSpeed;
