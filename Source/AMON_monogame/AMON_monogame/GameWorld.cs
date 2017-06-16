@@ -98,6 +98,8 @@ namespace AMON
 
 			collisionHandler.HandleCollisions(allObjects, worldBounds);
 			thePlayer.KeepWithinBounds(viewport.Bounds);
+
+			
 		}
 
 		public void Draw(SpriteBatch spriteBatch)

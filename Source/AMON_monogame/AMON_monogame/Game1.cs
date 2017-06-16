@@ -88,6 +88,7 @@ namespace AMON
 			if(currentGameState == GAME_STATE.PLAYING)
 			{
 				coreGameClass.Tick(gameTime);
+				theGraphicsManager.Tick(gameTime);
 			}
 
 			base.Update(gameTime);
@@ -139,6 +140,7 @@ namespace AMON
 					break;
 				case GAME_STATE.PLAYING:
 					coreGameClass.Draw(spriteBatch);
+					theGraphicsManager.Draw(spriteBatch);
 					break;
 				case GAME_STATE.GAME_LOST:
 					spriteBatch.Draw(GraphicsManager.Instance.failureMessage, new Rectangle(0, 0, 800, 480), Color.White);
@@ -168,6 +170,7 @@ namespace AMON
 					break;
 				case GAME_STATE.PLAYING:
 					coreGameClass.Initialise(GraphicsDevice.Viewport, this);
+					theGraphicsManager.Reset();
 					theAudioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HATEFALLING);
 					theAudioManager.StartBackgroundMusic();
 					break;

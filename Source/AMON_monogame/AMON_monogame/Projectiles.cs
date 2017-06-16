@@ -15,7 +15,7 @@ namespace AMON
 		public override void ReactToCollisionEntry(PhysicalObject other)
 		{
 			AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.EXPLOSION);
-			//Play explosion graphic
+			GraphicsManager.Instance.AddAnimation(new ExplosionAnimation(this.GetCentre()));
 			Destroy();
 		}		
 	}

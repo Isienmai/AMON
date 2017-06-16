@@ -16,14 +16,17 @@ namespace AMON
 		
 		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public Texture2D grenadeTexture, rocketTexture, planeMovingRight, planeMovingLeft;
+		public Texture2D explosionAnimationTexture;
 		public Texture2D[] cloudTextures = new Texture2D[2];
 
 		private SpriteFont font1;
-		private Animation explosion;
+		private List<Animation> animations;
+
+
 
 		private GraphicsManager()
 		{
-
+			animations = new List<Animation>();
 		}
 
 		public static GraphicsManager Instance
@@ -68,17 +71,40 @@ namespace AMON
 
 			font1 = Content.Load<SpriteFont>("SpriteFont1");
 
-			explosion = new Animation(Content.Load<Texture2D>("Explosdi"), new Vector2(96, 32), 32, 32);
+			explosionAnimationTexture = Content.Load<Texture2D>("Explosdi");
+		}
+
+		public void Reset()
+		{
+			animations.Clear();
 		}
 
 		public void Tick(GameTime gameTime)
 		{
-			explosion.Update(gameTime);
+			float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
+
+			for (int i = 0; i < animations.Count; ++i)
+			{
+				animations[i].Update(dt);
+			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
+			for (int i = 0; i < animations.Count; ++i)
+			{
+				animations[i].Draw(spriteBatch);
+			}
+		}
+		
+		public void AddAnimation(Animation newAnimation)
+		{
+			animations.Add(newAnimation);
+		}
 
+		public void RemoveAnimation(Animation animationToRemove)
+		{
+			animations.Remove(animationToRemove);
 		}
 
 		public void DrawString(SpriteBatch spriteBatch, string textToDraw, Vector2 position, Color textColour)
