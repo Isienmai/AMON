@@ -20,7 +20,6 @@ namespace AMON
 		PLAYER_STATE playerState;
 		Vector2 currentSpeed, normalSpeed, wetMovementSpeed;
 		Vector2 normalSize, wetSize;
-		Color normalColour, wetColour, poweredUpColour;
 		public float grenadeTimer;
 
 		float wetTimer;
@@ -33,14 +32,9 @@ namespace AMON
 			normalSize = new Vector2(38, 46);
 			wetSize = new Vector2(26, 50);
 
-			normalColour = Color.White;
-			wetColour = Color.Aquamarine;
-			poweredUpColour = Color.Gray;
-
 			playerState = PLAYER_STATE.PCS_NORMAL;
 			currentSpeed = normalSpeed;
 			dimensions = normalSize;
-			drawColour = normalColour;
 
 			grenadeTimer = 0;
 			wetTimer = 0;
@@ -164,23 +158,20 @@ namespace AMON
 
 					sprite = GraphicsManager.Instance.charFine;
 					dimensions = normalSize;
-					drawColour = normalColour;
 					break;
 				case PLAYER_STATE.PCS_WET:
 					currentSpeed = wetMovementSpeed;
 
 					sprite = GraphicsManager.Instance.charNotFine;
 					dimensions = wetSize;
-					drawColour = wetColour;
 
 					wetTimer = 3;
 					break;
 				case PLAYER_STATE.PCS_POWEREDUP:
 					currentSpeed = normalSpeed;
 
-					sprite = GraphicsManager.Instance.charFine;
+					sprite = GraphicsManager.Instance.charArmoured;
 					dimensions = normalSize;
-					drawColour = poweredUpColour;
 					break;
 			}
 		}

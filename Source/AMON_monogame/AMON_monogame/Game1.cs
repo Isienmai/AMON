@@ -131,9 +131,9 @@ namespace AMON
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);			
 
-			spriteBatch.Begin();
+			spriteBatch.Begin(0, null, SamplerState.PointClamp, null, null);
 
-			switch(currentGameState)
+			switch (currentGameState)
 			{
 				case GAME_STATE.MAIN_MENU:
 					spriteBatch.Draw(GraphicsManager.Instance.beginMessage, new Rectangle(0, 0, 800, 480), Color.White);

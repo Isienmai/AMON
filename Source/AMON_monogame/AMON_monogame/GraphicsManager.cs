@@ -14,7 +14,7 @@ namespace AMON
 	{
 		private static GraphicsManager instance;
 		
-		public Texture2D charFine, charNotFine, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
+		public Texture2D charFine, charNotFine, charArmoured, backgroundTexture, beginMessage, failureMessage, victoryMessage, castleImage, powerUpImage;
 		public Texture2D grenadeTexture, rocketTexture, planeMovingRight, planeMovingLeft;
 		public Texture2D explosionAnimationTexture;
 		public Texture2D[] cloudTextures = new Texture2D[2];
@@ -52,8 +52,8 @@ namespace AMON
 			castleImage = Content.Load<Texture2D>("Castle");
 
 			charFine = Content.Load<Texture2D>("Images/Parachute Midget");
-
 			charNotFine = Content.Load<Texture2D>("Images/Parachute midget damaged");
+			charArmoured = Content.Load<Texture2D>("Images/ArmouredMidget");
 
 			backgroundTexture = Content.Load<Texture2D>("Images/Background11.fw");
 
