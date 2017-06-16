@@ -46,7 +46,7 @@ namespace AMON
 
 	class EventManager
 	{
-		public static EventManager instance;
+		private static EventManager instance;
 
 		private List<EventTimer> currentTimers;
 
@@ -87,8 +87,14 @@ namespace AMON
 			}
 		}
 
+		public void Reset()
+		{
+			currentTimers.Clear();
+		}
+
 		public EventTimer AddTimer(float duration, TimedEvent callbackFunction)
 		{
+			if (duration == 0) duration = 0.01f;
 			EventTimer newTimer = new EventTimer(duration, callbackFunction);
 			currentTimers.Add(newTimer);
 

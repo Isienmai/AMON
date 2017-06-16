@@ -44,6 +44,7 @@
     <Compile Include="Animation.cs" />
     <Compile Include="AudioManager.cs" />
     <Compile Include="Background.cs" />
+    <Compile Include="DifficultyManager.cs" />
     <Compile Include="EventManager.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Cloud.cs" />

@@ -11,12 +11,8 @@ namespace AMON
 	class GameWorld
 	{
 		private static GameWorld instance;
-		
-		public bool midwayPlayed;
-		
-		public float timeElapsed;
 				
-		public int enemyRocketTimer, planeTimer, explosionTimer, powerupTimer, cloudTimer;
+		public float timeElapsed;
 
 		private AudioManager audioManager;
 		private CollisionManager collisionHandler;
@@ -65,17 +61,21 @@ namespace AMON
 			randNumGen = new Random();
 
 			allObjects = new List<PhysicalObject>();
-
-			powerupTimer = 0;
-			planeTimer = 500;
-			midwayPlayed = false;
+			
 			timeElapsed = 0;
-			enemyRocketTimer = 100;
 
 			thePlayer = new PlayerCharacter(new Vector2(388, 10));
 			allObjects.Add(thePlayer);
 
 			scrollingBackground = new Background(60, viewport);
+
+			//Setup the initial events
+			EventManager.Instance.Reset();
+			EventManager.Instance.AddTimer(3, new TimedEvent(EventSpawnCloud));
+			EventManager.Instance.AddTimer(5, new TimedEvent(EventSpawnMissile));
+			EventManager.Instance.AddTimer(8, new TimedEvent(EventSpawnPlane));
+			EventManager.Instance.AddTimer(30, new TimedEvent(EventMidwayPoint));
+			EventManager.Instance.AddTimer(60, new TimedEvent(EventGameCompleted));
 		}
 
 		public void Tick(GameTime gameTime)
@@ -83,11 +83,6 @@ namespace AMON
 			timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			float dt = (float)gameTime.ElapsedGameTime.Milliseconds * 0.001f;
-
-			CheckTime();
-			CheckWallCollision();
-			CheckTimer();
-			if (timeElapsed > 3f) UpdateEnemyWeapons();
 
 			scrollingBackground.Tick(dt);
 
@@ -98,8 +93,6 @@ namespace AMON
 
 			collisionHandler.HandleCollisions(allObjects, worldBounds);
 			thePlayer.KeepWithinBounds(viewport.Bounds);
-
-			
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
@@ -111,109 +104,43 @@ namespace AMON
 				allObjects[i].Draw(spriteBatch);
 			}
 
-			//draw small explosion
-			if (explosionTimer > 0)
-			{
-				//explosion.Draw(spriteBatch);
-				explosionTimer--;
-			}
-
 			//display grenade cooldown
 			DrawGrenadeCooldown(spriteBatch);
-		}	
-				
-		public void UpdateEnemyWeapons()
-		{
-			if (enemyRocketTimer == 0)
-			{
-				if (timeElapsed < 35)
-				{
-					enemyRocketTimer = 100;
-				}
-				else
-				if (timeElapsed < 45)
-				{
-					enemyRocketTimer = 80;
-				}
-				else
-				if (timeElapsed < 55)
-				{
-					enemyRocketTimer = 60;
-				}
-				else
-				{
-					enemyRocketTimer = 40;
-				}
-
-				allObjects.Add(new Missile(new Vector2(thePlayer.GetCentre().X, 500)));
-			
-			}
-			else
-			{
-				enemyRocketTimer--;
-			}
-
-
-			if (planeTimer == 0)
-			{
-				if (timeElapsed < 35)
-				{
-					planeTimer = 250;
-				}
-				else
-				if (timeElapsed < 45)
-				{
-					planeTimer = 200;
-				}
-				else
-				if (timeElapsed < 55)
-				{
-					planeTimer = 150;
-				}
-				else
-				{
-					planeTimer = 100;
-				}
-				
-				//randomise direction of movement
-				if (randNumGen.Next(0, 200) < 100)
-				{
-					allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), true));
-				}
-				else
-				{
-					allObjects.Add(new Plane(new Vector2(GraphicsManager.Instance.planeMovingRight.Width * -1, thePlayer.GetCentre().Y),  false));
-				}
-			}
-			else
-			{
-				planeTimer--;
-			}
-
-			if(cloudTimer == 0)
-			{
-				cloudTimer = randNumGen.Next((61-(int)timeElapsed) * 4, (61 - (int)timeElapsed) * 10);
-
-				allObjects.Add(new Cloud(viewport.Bounds));
-			}
-			else
-			{
-				cloudTimer--;
-			}
 		}
 
-		public void CheckTime()
+		public void EventSpawnMissile()
 		{
-			if ((timeElapsed > 60f))
-			{
-				upperGameClass.SetState(GAME_STATE.GAME_WON);
-			}
+			allObjects.Add(new Missile(new Vector2(thePlayer.GetCentre().X, 500)));
+			EventManager.Instance.AddTimer(DifficultyManager.GetMissileDelay(timeElapsed), new TimedEvent(EventSpawnMissile));
+		}
 
-			if ((timeElapsed > 30f) && !midwayPlayed)
+		public void EventSpawnPlane()
+		{
+			if (randNumGen.Next(0, 200) < 100)
 			{
-				audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
-				midwayPlayed = true;
+				allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), true));
 			}
+			else
+			{
+				allObjects.Add(new Plane(new Vector2(GraphicsManager.Instance.planeMovingRight.Width * -1, thePlayer.GetCentre().Y), false));
+			}
+			EventManager.Instance.AddTimer(DifficultyManager.GetPlaneDelay(timeElapsed), new TimedEvent(EventSpawnPlane));
+		}
+
+		public void EventSpawnCloud()
+		{
+			allObjects.Add(new Cloud(viewport.Bounds));
+			EventManager.Instance.AddTimer(DifficultyManager.GetCloudDelay(timeElapsed, randNumGen), new TimedEvent(EventSpawnCloud));
+		}
+
+		public void EventMidwayPoint()
+		{
+			audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
+		}
+
+		public void EventGameCompleted()
+		{
+			EndGame(true);
 		}
 
 		public void UpdatePlayerInput(int horizontalMotion, int verticalMotion, bool dropBomb)
@@ -221,36 +148,7 @@ namespace AMON
 			thePlayer.MovePlayer(horizontalMotion, verticalMotion);
 
 			if (dropBomb) thePlayer.DropGrenade();
-		}
-
-		public void CheckWallCollision()
-		{
-			/*if (charLocation.X < 0) charLocation.X = 0;
-			if (charLocation.X + charLocation.Width > 800) charLocation.X = (800 - charLocation.Width);
-			if (charLocation.Y < 0) charLocation.Y = 0;
-			if (charLocation.Y + charLocation.Height > 480) charLocation.Y = (480 - charLocation.Height);*/
-		}
-
-		public void CheckTimer()
-		{
-			/*if (timer > 0)
-			{
-				charImage = charNotFine;
-				charColor = Color.Aquamarine;
-				timer--;
-				charLocation.Height = 50;
-				charLocation.Width = 26;
-				terminalVelocity = 9;
-			}
-			else
-			{
-				if (!poweredUp) charColor = Color.White;
-				charImage = charFine;
-				charLocation.Height = 46;
-				charLocation.Width = 38;
-				terminalVelocity = 7;
-			}*/
-		}
+		}		
 
 		public void AddObject(PhysicalObject objToAdd)
 		{
@@ -264,7 +162,10 @@ namespace AMON
 
 		public void EndGame(bool victory)
 		{
-			if(victory)
+			//Make sure all events are wiped on game end
+			EventManager.Instance.Reset();
+
+			if (victory)
 			{
 				upperGameClass.SetState(GAME_STATE.GAME_WON);
 			}
