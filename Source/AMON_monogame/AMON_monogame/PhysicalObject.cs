@@ -109,6 +109,7 @@ namespace AMON
 			drawDest.Y = (int)(position.Y + 0.5f);
 			drawDest.Width = (int)(dimensions.X + 0.5f);
 			drawDest.Height = (int)(dimensions.Y + 0.5f);
+
 			spriteBatch.Draw(sprite, drawDest, drawColour);
 		}
 

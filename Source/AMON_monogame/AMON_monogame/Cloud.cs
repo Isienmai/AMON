@@ -28,6 +28,9 @@ namespace AMON
 			velocity.Y = -300;
 
 			collidableTypes.Add(typeof(PlayerCharacter));
+
+			//Make the clouds partially transparent
+			drawColour = drawColour * 0.8f;
 		}
 
 		protected override void SpecifyCollidableTypes()
