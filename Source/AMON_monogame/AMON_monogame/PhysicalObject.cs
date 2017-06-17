@@ -61,7 +61,7 @@ namespace AMON
 			dimensions = new Vector2(sprite.Bounds.Width, sprite.Bounds.Height);
 			drawColour = Color.White;
 
-			drawLayer = 1;
+			drawLayer = 10;
 
 			SpecifyCollidableTypes();
 		}
@@ -93,7 +93,7 @@ namespace AMON
 			}
 
 			//Return no collision if the other object cannot collide with this one
-			if (ignoreOther && collidableTypes.Count != 0) return false;
+			if (ignoreOther) return false;
 
 			return Collided(other.position, other.dimensions);
 		}

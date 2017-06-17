@@ -77,6 +77,7 @@ namespace AMON
 			EventManager.Instance.AddTimer(5, new TimedEvent(EventSpawnMissile));
 			EventManager.Instance.AddTimer(8, new TimedEvent(EventSpawnPlane));
 			EventManager.Instance.AddTimer(30, new TimedEvent(EventMidwayPoint));
+			EventManager.Instance.AddTimer(56, new TimedEvent(EventSpawnCastle));
 			gameEndTimer = EventManager.Instance.AddTimer(60, new TimedEvent(EventGameCompleted));
 		}
 
@@ -155,6 +156,11 @@ namespace AMON
 		public void EventMidwayPoint()
 		{
 			audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
+		}
+
+		public void EventSpawnCastle()
+		{
+			allObjects.Add(new BackgroundCastle(viewport.Bounds));
 		}
 
 		public void EventGameCompleted()
