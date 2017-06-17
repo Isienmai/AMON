@@ -37,6 +37,8 @@ namespace AMON
 			dimensions = normalSize;
 
 			grenadesActive = true;
+
+			DrawLayer = 50;
 		}
 
 		protected override void SpecifyCollidableTypes()

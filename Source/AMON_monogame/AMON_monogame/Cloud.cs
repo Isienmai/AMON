@@ -31,6 +31,8 @@ namespace AMON
 
 			//Make the clouds partially transparent
 			drawColour = drawColour * 0.8f;
+
+			DrawLayer = 80;
 		}
 
 		protected override void SpecifyCollidableTypes()

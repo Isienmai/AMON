@@ -13,6 +13,8 @@ namespace AMON
 		public Powerup(Vector2 SpawnLocation) : base(GraphicsManager.Instance.powerUpImage)
 		{
 			position = SpawnLocation;
+
+			DrawLayer = 30;
 		}
 
 		protected override void SpecifyCollidableTypes()

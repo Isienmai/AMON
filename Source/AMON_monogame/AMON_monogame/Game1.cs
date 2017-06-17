@@ -134,9 +134,9 @@ namespace AMON
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.CornflowerBlue);			
+			GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			spriteBatch.Begin(0, null, SamplerState.PointClamp, null, null);
+			spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null);
 
 			switch (currentGameState)
 			{

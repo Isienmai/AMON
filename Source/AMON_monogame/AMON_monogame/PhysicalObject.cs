@@ -12,6 +12,23 @@ namespace AMON
 	abstract class PhysicalObject
 	{
 		private Rectangle drawDest;
+
+		//A number between 0 and 99 representing 100 possible draw layers
+		private int drawLayer;
+
+		public int DrawLayer
+		{
+			get
+			{
+				return drawLayer;
+			}
+			protected set
+			{
+				if (value > 99) drawLayer = 99;
+				else if (value < 0) drawLayer = 0;
+				else drawLayer = value;
+			}
+		}
 		protected Vector2 dimensions;
 		protected Vector2 position;
 		protected Vector2 velocity;
@@ -43,6 +60,8 @@ namespace AMON
 			sprite = objectSprite;
 			dimensions = new Vector2(sprite.Bounds.Width, sprite.Bounds.Height);
 			drawColour = Color.White;
+
+			drawLayer = 1;
 
 			SpecifyCollidableTypes();
 		}

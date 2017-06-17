@@ -38,6 +38,14 @@ namespace AMON
 			return timer <= 0;
 		}
 
+		public float Timer
+		{
+			get 
+			{
+				return timer;
+			}
+		}
+
 		public void ExecuteCallbackFunction()
 		{
 			expirationEvent();
@@ -76,8 +84,9 @@ namespace AMON
 				currentTimers[i].Tick(dt);
 				if(currentTimers[i].TimerExpired())
 				{
-					currentTimers[i].ExecuteCallbackFunction();
+					//Store the timer to remove FIRST as the callback function may empty the currentTimers list
 					timersToRemove.Add(currentTimers[i]);
+					currentTimers[i].ExecuteCallbackFunction();
 				}
 			}
 

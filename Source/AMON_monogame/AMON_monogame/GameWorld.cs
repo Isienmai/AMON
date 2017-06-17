@@ -29,6 +29,8 @@ namespace AMON
 
 		private Game1 upperGameClass;
 
+		private EventTimer gameEndTimer;
+
 		public static GameWorld Instance
 		{
 			get 
@@ -75,7 +77,7 @@ namespace AMON
 			EventManager.Instance.AddTimer(5, new TimedEvent(EventSpawnMissile));
 			EventManager.Instance.AddTimer(8, new TimedEvent(EventSpawnPlane));
 			EventManager.Instance.AddTimer(30, new TimedEvent(EventMidwayPoint));
-			EventManager.Instance.AddTimer(60, new TimedEvent(EventGameCompleted));
+			gameEndTimer = EventManager.Instance.AddTimer(60, new TimedEvent(EventGameCompleted));
 		}
 
 		public void Tick(GameTime gameTime)
@@ -98,10 +100,27 @@ namespace AMON
 		public void Draw(SpriteBatch spriteBatch)
 		{
 			scrollingBackground.Draw(spriteBatch);
-			
+
+			//a 2D array with each row representing a draw layer. The rows can grow dynamically to acommodate any number of objects in that layer
+			List<int>[] orderedIndices = new List<int>[100];
+			for(int i = 0; i < 100; ++i)
+			{
+				orderedIndices[i] = new List<int>();
+			}
+
+			//populate the array with object indices, all draw layer 1 objects are stored in orderedIndices[1] as an index to the allObjects list
 			for(int i = 0; i < allObjects.Count; ++i)
 			{
-				allObjects[i].Draw(spriteBatch);
+				orderedIndices[allObjects[i].DrawLayer].Add(i);
+			}
+
+			//Draw the objects in order of their draw layer starting with layer 0 (objects in the same layer are ordered by their order within allObjects)
+			for(int i = 0; i < 100; ++i)
+			{
+				for(int j = 0; j < orderedIndices[i].Count; ++j)
+				{
+					allObjects[orderedIndices[i][j]].Draw(spriteBatch);
+				}
 			}
 
 			//display grenade cooldown
@@ -186,7 +205,7 @@ namespace AMON
 				GraphicsManager.Instance.DrawString(spriteBatch, "Bomb Ready!", new Vector2(10, 10), Color.White);
 			}
 
-			GraphicsManager.Instance.DrawString(spriteBatch, "Time till impact:" + Convert.ToString((int)(60 - timeElapsed)), new Vector2(550, 10), Color.Red);
+			GraphicsManager.Instance.DrawString(spriteBatch, "Time till impact:" + Convert.ToString((int)(gameEndTimer.Timer + 0.5f)), new Vector2(550, 10), Color.Red);
 
 			//Debug the out of bounds object removal
 			//GraphicsManager.Instance.DrawString(spriteBatch, "Object Count:" + Convert.ToString(allObjects.Count), new Vector2(450, 20), Color.Blue);
