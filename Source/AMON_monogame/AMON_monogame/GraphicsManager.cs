@@ -49,7 +49,7 @@ namespace AMON
 
 			powerUpImage = Content.Load<Texture2D>("Images/Shield");
 
-			castleImage = Content.Load<Texture2D>("Castle");
+			castleImage = Content.Load<Texture2D>("CastleV2");
 
 			charFine = Content.Load<Texture2D>("Images/Parachute Midget");
 			charNotFine = Content.Load<Texture2D>("Images/Parachute midget damaged");

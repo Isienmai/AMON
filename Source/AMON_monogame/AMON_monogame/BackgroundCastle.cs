@@ -14,6 +14,12 @@ namespace AMON
 			velocity.Y = -100;
 
 			DrawLayer = 2;
+
+			float scale = (float)viewportLimits.Width / dimensions.X;
+
+			//Scale the image up to fix the screen
+			dimensions.X *= scale;
+			dimensions.Y *= scale;
 		}
 
 		protected override void SpecifyCollidableTypes()
