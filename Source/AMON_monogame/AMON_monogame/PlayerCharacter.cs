@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
+	/// <summary>
+	/// Enum to represent the possible states the player can be in
+	/// </summary>
 	enum PLAYER_STATE
 	{
 		PCS_NORMAL,
@@ -17,11 +20,18 @@ namespace AMON
 
 	class PlayerCharacter : PhysicalObject
 	{
+		//the player's current state
 		PLAYER_STATE playerState;
+
+		//The player's current and modified velocities
 		Vector2 currentSpeed, normalSpeed, wetMovementSpeed;
+		//The player's normal and modified dimensions
 		Vector2 normalSize, wetSize;
+
+		//if true then the player is allowed to drop a grenade should they choose to
 		public bool grenadesActive;
 
+		//The event timer  for leaving the PCS_WET state. This reference is kept to allow the timer to be reset whenever the player collides with a cloud
 		EventTimer dampnessTimer;
 
 		public PlayerCharacter(Vector2 spawnLocation) : base(spawnLocation, GraphicsManager.Instance.charFine)
@@ -49,32 +59,31 @@ namespace AMON
 			collidableTypes.Add(typeof(Powerup));
 		}
 
+		//Called every tick that a collision is detected
 		public override void ReactToCollision(PhysicalObject other)
 		{
 			if (other is Cloud)
 			{
 				switch (playerState)
 				{
-					case PLAYER_STATE.PCS_NORMAL:
-						AudioManager.Instance.PlayRandomPain();
-						SetState(PLAYER_STATE.PCS_WET);
-						break;
+					//Keep the dampness timer at max whilst inside a cloud
 					case PLAYER_STATE.PCS_WET:
-						//Keep the timer at max whilst inside a cloud
 						if(dampnessTimer != null)
 						{
 							dampnessTimer.ResetTimer();
 						}
 						break;
+					case PLAYER_STATE.PCS_NORMAL:
 					case PLAYER_STATE.PCS_POWEREDUP:
 						break;
 				}
 			}
 		}
 
+		//Called when a new collision occurs
 		public override void ReactToCollisionEntry(PhysicalObject other)
 		{
-			//Look into IDictionary and the Visitor pattern as possible alternatives to these if/else statements
+			//TODO: Look into IDictionary and the Visitor pattern as possible alternatives to these if/else statements
 			if (other is Projectile)
 			{
 				switch(playerState)
@@ -94,18 +103,24 @@ namespace AMON
 			{
 				SetState(PLAYER_STATE.PCS_POWEREDUP);
 			}
+			else if (other is Cloud)
+			{
+				switch (playerState)
+				{
+					case PLAYER_STATE.PCS_NORMAL:
+						AudioManager.Instance.PlayRandomPain();
+						SetState(PLAYER_STATE.PCS_WET);
+						break;
+					case PLAYER_STATE.PCS_WET:
+						AudioManager.Instance.PlayRandomPain();
+						break;
+					case PLAYER_STATE.PCS_POWEREDUP:
+						break;
+				}
+			}
 		}
-
-		public override void Tick(float deltaTime)
-		{
-			base.Tick(deltaTime);
-		}
-
-		/// <summary>
-		/// Update the object's velocity to control the player's movement.
-		/// </summary>
-		/// <param name="horizontalMovement"> Negative = left, Positive = right, Zero = no motion</param>
-		/// <param name="verticalMovement"> Negative = up, Positive = down, Zero = no motion</param>
+		
+		//Negative inputs represent motion to the left or up
 		public void MovePlayer(int horizontalMovement, int verticalMovement)
 		{
 			//convert the inputs to -1, 0, or +1 depending on their sign
@@ -128,8 +143,8 @@ namespace AMON
 
 		public override void Destroy()
 		{
-			GameWorld.Instance.EndGame(false);
 			base.Destroy();
+			GameWorld.Instance.EndGame(false);
 		}
 
 		public void EventStopDamp()
@@ -143,6 +158,7 @@ namespace AMON
 			grenadesActive = true;
 		}
 
+		//Move the player to be within the specified rectangle
 		public void KeepWithinBounds(Rectangle bounds)
 		{
 			if (position.X < bounds.Location.X) position.X = bounds.Location.X;

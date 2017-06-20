@@ -10,9 +10,29 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AMON
 {
-	//Singleton class for storing/playing all audio
+	/// <summary>
+	/// A singleton class for storing and playing any audio clips/background music.
+	/// </summary>
 	public class AudioManager
 	{
+		private static AudioManager instance;
+
+		public static AudioManager Instance
+		{
+			get
+			{
+				if (instance == null)
+				{
+					instance = new AudioManager();
+				}
+
+				return instance;
+			}
+		}
+
+		/// <summary>
+		/// Enum used to identify all audio clips stored in the audioClips list
+		/// </summary>
 		public enum AUDIOCLIPS
 		{
 			BRILLIANT = 0,
@@ -26,29 +46,17 @@ namespace AMON
 			COUNT
 		}
 
-		private static AudioManager instance;
-
+		//List of individual audio clips
 		private List<SoundEffect> audioClips;
+		//List of pain noises
 		private List<SoundEffect> pain;
+		//Backround music
 		private Song background1;
 
 		private AudioManager()
 		{
 			pain = new List<SoundEffect>();
 			SetMediaPlayerVolume(5);
-		}
-
-		public static AudioManager Instance
-		{
-			get
-			{
-				if(instance == null)
-				{
-					instance = new AudioManager();
-				}
-
-				return instance;
-			}
 		}
 
 		public void LoadContent(ContentManager Content)
@@ -76,17 +84,9 @@ namespace AMON
 			MediaPlayer.Volume = newVolume;
 		}
 
-		public bool StartBackgroundMusic()
+		public void StartBackgroundMusic()
 		{
-			bool audioLoaded = false;
-
-			if(background1 != null)
-			{
-				audioLoaded = true;
-				MediaPlayer.Play(background1);
-			}
-
-			return audioLoaded;
+			MediaPlayer.Play(background1);
 		}
 
 		public void StopBackgroundMusic()

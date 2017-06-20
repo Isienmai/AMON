@@ -7,17 +7,20 @@ using Microsoft.Xna.Framework;
 
 namespace AMON
 {
+	/// <summary>
+	/// Encapsulates the background castle that appears at the end of the game
+	/// </summary>
 	class BackgroundCastle : PhysicalObject
 	{
-		public BackgroundCastle(Rectangle viewportLimits) : base(new Vector2(0, viewportLimits.Height)/* + GraphicsManager.Instance.castleImage.Height)*/ , GraphicsManager.Instance.castleImage)
+		public BackgroundCastle(Rectangle viewportLimits) : base(new Vector2(0, viewportLimits.Height), GraphicsManager.Instance.castleImage)
 		{
 			velocity.Y = -100;
 
+			//Draw the castle behind almost everything
 			DrawLayer = 2;
 
-			float scale = (float)viewportLimits.Width / dimensions.X;
-
 			//Scale the image up to fix the screen
+			float scale = (float)viewportLimits.Width / dimensions.X;
 			dimensions.X *= scale;
 			dimensions.Y *= scale;
 		}

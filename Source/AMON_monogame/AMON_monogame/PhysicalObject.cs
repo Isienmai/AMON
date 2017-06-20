@@ -8,12 +8,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
-	//This class represents anything with a physical presence ingame
+	/// <summary>
+	/// Parent class representing any physical object
+	/// </summary>
 	abstract class PhysicalObject
 	{
+		//The location and size of the object on screen
 		private Rectangle drawDest;
+		//The image used to represent the object on screen
+		protected Texture2D sprite;
+		//The colour passed to spriteBatch draw
+		protected Color drawColour;
 
-		//A number between 0 and 99 representing 100 possible draw layers
+		//Control if this object is drawn in front of or behind other objects. Lower draw layers are bahind higher layers.
 		private int drawLayer;
 
 		public int DrawLayer
@@ -24,20 +31,21 @@ namespace AMON
 			}
 			protected set
 			{
+				//only draw layer values of 0->99 incl are valid
 				if (value > 99) drawLayer = 99;
 				else if (value < 0) drawLayer = 0;
 				else drawLayer = value;
 			}
 		}
-		protected Vector2 dimensions;
-		protected Vector2 position;
-		protected Vector2 velocity;
-		protected Texture2D sprite;
-		protected Color drawColour;
 
-		//Keep track of the types that this object can collide with.
-		//Implementation needs work
-		//Empty list indicates this object can collide with everything
+		//The width and height of the object
+		protected Vector2 dimensions;
+		//The location of the top left corner of the object
+		protected Vector2 position;
+		//The object's velocity
+		protected Vector2 velocity;
+
+		//A list identifying what other objects this one can collide with
 		protected List<Type> collidableTypes;
 
 		public PhysicalObject(Texture2D objectSprite)
@@ -66,6 +74,7 @@ namespace AMON
 			SpecifyCollidableTypes();
 		}
 
+		//All subclasses need to specify what they can collide with
 		protected abstract void SpecifyCollidableTypes();
 
 		//Collision reactions to be implemented by base classes if needed.
@@ -73,6 +82,7 @@ namespace AMON
 		public virtual void ReactToCollisionEntry(PhysicalObject other) { }
 		public virtual void ReactToCollisionExit(PhysicalObject other) { }
 
+		//Get the coordinates of the object's centre
 		public Vector2 GetCentre()
 		{
 			return new Vector2(position.X + dimensions.X/2.0f, position.Y + dimensions.Y/2.0f);
@@ -86,13 +96,13 @@ namespace AMON
 
 		public bool Collided(PhysicalObject other)
 		{
+			//Check the other object can collide with this one
 			bool ignoreOther = true;
 			for(int i = 0; i < collidableTypes.Count; ++i)
 			{
 				if (collidableTypes[i].IsInstanceOfType(other)) ignoreOther = false;
 			}
-
-			//Return no collision if the other object cannot collide with this one
+			
 			if (ignoreOther) return false;
 
 			return Collided(other.position, other.dimensions);

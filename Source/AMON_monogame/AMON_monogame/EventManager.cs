@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace AMON
 {
+	//Callback function definition
 	public delegate void TimedEvent();
 
-	//Struct to store a timer and a function to call once the timer expires
+	/// <summary>
+	/// Represents a single event, with an internal timer and a callback function
+	/// </summary>
 	class EventTimer
 	{
+		//The specified time delay
 		private float initialTimer;
+		//Time remaining before the event fires
 		private float timer;
+		//Delegate function to call when the timer expires
 		private TimedEvent expirationEvent;
 
 		public EventTimer(float timerDuration, TimedEvent callbackFunction)
@@ -21,21 +27,24 @@ namespace AMON
 			timer = initialTimer;
 			expirationEvent = callbackFunction;
 		}
-
-		//Add an equality comparison
+		
+		//Update the timer
 		public void Tick(float dt)
 		{
 			timer -= dt;
+
+			//call the delegate and destroy this if the timer has run out
+			if (timer <= 0)
+			{
+				expirationEvent();
+				Destroy();
+			}
 		}
 
+		//Allow the timer to be reset to it's initial value
 		public void ResetTimer()
 		{
 			timer = initialTimer;
-		}
-
-		public bool TimerExpired()
-		{
-			return timer <= 0;
 		}
 
 		public float Timer
@@ -46,17 +55,20 @@ namespace AMON
 			}
 		}
 
-		public void ExecuteCallbackFunction()
+		//Remove the timer from the EventManager's timer list
+		//NOTE: this may cause problems if the timer continues to be referenced from elsewhere
+		public void Destroy()
 		{
-			expirationEvent();
+			EventManager.Instance.RemoveTimer(this);
 		}
 	}
 
+	/// <summary>
+	/// A singleton class to manage all timed events.
+	/// </summary>
 	class EventManager
 	{
 		private static EventManager instance;
-
-		private List<EventTimer> currentTimers;
 
 		public static EventManager Instance
 		{
@@ -71,6 +83,10 @@ namespace AMON
 			}
 		}
 
+
+		//Timed events currently being managed
+		private List<EventTimer> currentTimers;
+
 		private EventManager()
 		{
 			currentTimers = new List<EventTimer>();
@@ -78,21 +94,10 @@ namespace AMON
 
 		public void Tick(float dt)
 		{
-			List<EventTimer> timersToRemove = new List<EventTimer>();
-			for(int i = 0; i < currentTimers.Count; ++i)
+			//Loop through a copy of the currentTimers list and tick each timer
+			foreach(EventTimer timer in currentTimers.ToArray())
 			{
-				currentTimers[i].Tick(dt);
-				if(currentTimers[i].TimerExpired())
-				{
-					//Store the timer to remove FIRST as the callback function may empty the currentTimers list
-					timersToRemove.Add(currentTimers[i]);
-					currentTimers[i].ExecuteCallbackFunction();
-				}
-			}
-
-			for(int i = 0; i < timersToRemove.Count; ++i)
-			{
-				currentTimers.Remove(timersToRemove[i]);
+				timer.Tick(dt);
 			}
 		}
 
@@ -103,11 +108,15 @@ namespace AMON
 
 		public EventTimer AddTimer(float duration, TimedEvent callbackFunction)
 		{
-			if (duration == 0) duration = 0.01f;
 			EventTimer newTimer = new EventTimer(duration, callbackFunction);
 			currentTimers.Add(newTimer);
 
 			return newTimer;
+		}
+
+		public void RemoveTimer(EventTimer timerToRemove)
+		{
+			currentTimers.Remove(timerToRemove);
 		}
 	}
 }

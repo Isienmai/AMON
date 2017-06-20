@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace AMON
 {
-	//Class to handle the game's difficulty. Currently just provides methods to calculate various time delays based on the elapsed time
+	/// <summary>
+	/// Class to control the game's difficulty curve
+	/// </summary>
 	class DifficultyManager
 	{
+		//Control missile difficulty curve
 		public static float GetMissileDelay(float elapsedTime)
 		{
 			if (elapsedTime < 35)
@@ -29,6 +32,7 @@ namespace AMON
 			}
 		}
 
+		//Control plane difficulty curve
 		public static float GetPlaneDelay(float elapsedTime)
 		{
 			if (elapsedTime < 35)
@@ -49,16 +53,20 @@ namespace AMON
 			}
 		}
 
+		//Control cloud difficulty curve
 		public static float GetCloudDelay(float elapsedTime, Random randNumGen)
 		{
 			float timeRemaining = 60 - elapsedTime;
 
+			//Use remaining time to define the range of possible cloud delays
 			float min = timeRemaining / 20.0f;
 			float max = timeRemaining / 10.0f;
 
+			//Avoid invalid ranges
 			if (min < 1) min = 1;
 			if (min < 2) max = 2;
 
+			//Randomly generate the time delay on the next cloud spawn using the specified range
 			return randNumGen.Next((int)(min + 0.5f) , (int)(max + 0.5f));
 		}
 	}

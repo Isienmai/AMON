@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
+	/// <summary>
+	/// The cloud object
+	/// </summary>
 	class Cloud : PhysicalObject
 	{
 		public Cloud(Rectangle viewportLimits) : base(GraphicsManager.Instance.cloudTextures[new Random().Next(0,2)])
@@ -25,9 +28,7 @@ namespace AMON
 			position.X = randGenerator.Next(-100, viewportLimits.Width - width);
 			position.Y = randGenerator.Next(viewportLimits.Height, viewportLimits.Height + 90);
 
-			velocity.Y = -300;
-
-			collidableTypes.Add(typeof(PlayerCharacter));
+			velocity.Y = -300;			
 
 			//Make the clouds partially transparent
 			drawColour = drawColour * 0.8f;

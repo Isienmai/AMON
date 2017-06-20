@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
+	/// <summary>
+	/// This class represents the basic projectile, defining standard reactions to collisions for all projectiles
+	/// </summary>
 	abstract class Projectile : PhysicalObject
 	{
 		public Projectile(Vector2 spawnLocation, Texture2D projectileSprite) : base(spawnLocation, projectileSprite){}
@@ -20,6 +23,10 @@ namespace AMON
 		}		
 	}
 
+	/// <summary>
+	/// The following THREE classes are specific projectiles, defining different velocities, images, and collidableTypes.
+	/// The Plane projectile also contains a special collision response when colliding with a missile.
+	/// </summary>
 	class Grenade : Projectile
 	{
 		public Grenade(Vector2 spawnLocation) : base(spawnLocation, GraphicsManager.Instance.grenadeTexture)

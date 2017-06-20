@@ -8,34 +8,18 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AMON
 {
+	/// <summary>
+	/// Singleton holding all objects in the game and handle most of the game logic
+	/// </summary>
 	class GameWorld
 	{
 		private static GameWorld instance;
-				
-		public float timeElapsed;
-
-		private AudioManager audioManager;
-		private CollisionManager collisionHandler;
-
-		private List<PhysicalObject> allObjects;
-		private Viewport viewport;
-		private Rectangle worldBounds;
-
-		private PlayerCharacter thePlayer;
-
-		private Background scrollingBackground;
-
-		private Random randNumGen;
-
-		private Game1 upperGameClass;
-
-		private EventTimer gameEndTimer;
 
 		public static GameWorld Instance
 		{
-			get 
+			get
 			{
-				if(instance == null)
+				if (instance == null)
 				{
 					instance = new GameWorld();
 				}
@@ -44,9 +28,34 @@ namespace AMON
 			}
 		}
 
+		//Keep track of how long the game has been running (used when calling the DifficultyManager's functions)
+		public float timeElapsed;
+		
+		//Object ot handle collision detection/resolution
+		private CollisionManager collisionHandler;
+
+		//The list of all objects currently in the scene
+		private List<PhysicalObject> allObjects;
+
+		//The size of the game's viewport
+		private Viewport viewport;
+		//Objects that leave this rectangle are destroyed
+		private Rectangle worldBounds;
+
+		private PlayerCharacter thePlayer;
+
+		private Background scrollingBackground;
+
+		private Random randNumGen;
+
+		//Reference to the Game1 class that is running the game
+		private Game1 upperGameClass;
+
+		//The event timer that ends the game when it ends (used to display the remaining time)
+		private EventTimer gameEndTimer;
+
 		private GameWorld()
 		{
-			audioManager = AudioManager.Instance;
 			collisionHandler = new CollisionManager();
 		}
 
@@ -70,13 +79,15 @@ namespace AMON
 			allObjects.Add(thePlayer);
 
 			scrollingBackground = new Background(60, viewport);
-
-			//Setup the initial events
+			
 			EventManager.Instance.Reset();
+			//Initial cloud, missile, and plane events
 			EventManager.Instance.AddTimer(3, new TimedEvent(EventSpawnCloud));
 			EventManager.Instance.AddTimer(5, new TimedEvent(EventSpawnMissile));
 			EventManager.Instance.AddTimer(8, new TimedEvent(EventSpawnPlane));
+			//Midpoint event
 			EventManager.Instance.AddTimer(30, new TimedEvent(EventMidwayPoint));
+			//Endgame events
 			EventManager.Instance.AddTimer(56, new TimedEvent(EventSpawnCastle));
 			gameEndTimer = EventManager.Instance.AddTimer(60, new TimedEvent(EventGameCompleted));
 		}
@@ -102,20 +113,24 @@ namespace AMON
 		{
 			scrollingBackground.Draw(spriteBatch);
 
-			//a 2D array with each row representing a draw layer. The rows can grow dynamically to acommodate any number of objects in that layer
+			//Rather than draw all objects in the order they appear in the allObjects list a 2D array is created
+			//This array references objects in the allObjects list but reorganises them by their draw layer
+			//Each row represents a layer and can reference any number of objects
+
+			//Initialise the 2D array as an array of lists
 			List<int>[] orderedIndices = new List<int>[100];
 			for(int i = 0; i < 100; ++i)
 			{
 				orderedIndices[i] = new List<int>();
 			}
 
-			//populate the array with object indices, all draw layer 1 objects are stored in orderedIndices[1] as an index to the allObjects list
+			//populate the array of lists
 			for(int i = 0; i < allObjects.Count; ++i)
 			{
 				orderedIndices[allObjects[i].DrawLayer].Add(i);
 			}
 
-			//Draw the objects in order of their draw layer starting with layer 0 (objects in the same layer are ordered by their order within allObjects)
+			//Draw the objects in order from draw layer 0 to 99
 			for(int i = 0; i < 100; ++i)
 			{
 				for(int j = 0; j < orderedIndices[i].Count; ++j)
@@ -136,6 +151,7 @@ namespace AMON
 
 		public void EventSpawnPlane()
 		{
+			//50:50 chance that the plane will be flying to the left or right
 			if (randNumGen.Next(0, 200) < 100)
 			{
 				allObjects.Add(new Plane(new Vector2(viewport.Width, thePlayer.GetCentre().Y), true));
@@ -144,6 +160,7 @@ namespace AMON
 			{
 				allObjects.Add(new Plane(new Vector2(GraphicsManager.Instance.planeMovingRight.Width * -1, thePlayer.GetCentre().Y), false));
 			}
+
 			EventManager.Instance.AddTimer(DifficultyManager.GetPlaneDelay(timeElapsed), new TimedEvent(EventSpawnPlane));
 		}
 
@@ -155,7 +172,8 @@ namespace AMON
 
 		public void EventMidwayPoint()
 		{
-			audioManager.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
+			//Play the midway point audio clip
+			AudioManager.Instance.PlayAudioClip(AudioManager.AUDIOCLIPS.HOWLONG);
 		}
 
 		public void EventSpawnCastle()
@@ -192,11 +210,11 @@ namespace AMON
 
 			if (victory)
 			{
-				upperGameClass.SetState(GAME_STATE.GAME_WON);
+				upperGameClass.SetState(Game1.GAME_STATE.GAME_WON_MENU);
 			}
 			else
 			{
-				upperGameClass.SetState(GAME_STATE.GAME_LOST);
+				upperGameClass.SetState(Game1.GAME_STATE.GAME_LOST_MENU);
 			}
 		}
 

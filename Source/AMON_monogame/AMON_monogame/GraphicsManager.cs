@@ -79,14 +79,6 @@ namespace AMON
 			animations.Clear();
 		}
 
-		public void Tick(float dt)
-		{
-			for (int i = 0; i < animations.Count; ++i)
-			{
-				animations[i].Update(dt);
-			}
-		}
-
 		public void Draw(SpriteBatch spriteBatch)
 		{
 			for (int i = 0; i < animations.Count; ++i)

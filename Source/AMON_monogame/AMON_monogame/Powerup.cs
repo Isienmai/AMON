@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
+	/// <summary>
+	/// This class represents the powerup object.
+	/// </summary>
 	class Powerup : PhysicalObject
 	{
 		public Powerup(Vector2 SpawnLocation) : base(GraphicsManager.Instance.powerUpImage)

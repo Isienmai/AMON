@@ -8,20 +8,30 @@ using Microsoft.Xna.Framework.Input;
 
 namespace AMON
 {
+	/// <summary>
+	/// This class encapsulates everything that is required to display a sprite animation taken from a spritesheet.
+	/// </summary>
 	public class Animation
 	{
+		//THe spritesheet
 		Texture2D texture;
+		//Position and size of the first animation sprite in the sprite sheet
 		Rectangle frameSource;
-		public Vector2 position;
-		public Vector2 origin;
-
+		//Location of the current animation frame
+		Vector2 position;
+		
+		//THe frame currently being shown and the total number of frames in the animation
 		int currentFrame;
 		int frameCount;
-
-		float timer;
+		
+		//Duration of each frame
 		float frameDuration;
 
+		//If true the animation will be destroyed after showing all frames once
 		bool playOnce;
+
+		//The centre of the sprite (rather than drawing from the top left corner draw from the sprite's centre instead)
+		Vector2 origin;
 
 		public Animation(Texture2D newTexture, Vector2 newPosition, float newFrameHeight, float newFrameWidth, int numOfFrames)
 		{
@@ -29,36 +39,42 @@ namespace AMON
 			position = newPosition;
 
 			frameSource = new Rectangle(0, 0, (int)(newFrameWidth + 0.5f), (int)(newFrameHeight + 0.5f));
-			origin = new Vector2(newFrameWidth / 2.0f, newFrameHeight / 2.0f);
 
 			frameDuration = 0.1f;
 			frameCount = numOfFrames;
 
 			playOnce = true;
+
+			currentFrame = 0;
+			EventManager.Instance.AddTimer(frameDuration, new TimedEvent(UpdateAnimationFrame));
+
+			origin = new Vector2(newFrameWidth / 2.0f, newFrameHeight / 2.0f);
 		}
 
-		public void Update(float dt)
+		public void UpdateAnimationFrame()
 		{
-			timer += dt;
-			if(timer > frameDuration)
+			//Increment the frame
+			currentFrame++;
+			if (currentFrame >= frameCount)
 			{
-				currentFrame++;
-				timer = 0;
-				if (currentFrame >= frameCount)
+				if (!playOnce)
 				{
-					if(playOnce)
-					{
-						Destroy();
-					}
-					else
-					{
-						currentFrame = 0;
-					}
+					currentFrame = 0;
+				}
+				else
+				{
+					//Destroy the object if the animation should only play once
+					Destroy();
+					return;
 				}
 			}
 
+			//Update the frame position
 			frameSource.X = currentFrame * frameSource.Width;
-		}
+
+			//Set the event timer to update the animation again
+			EventManager.Instance.AddTimer(frameDuration, new TimedEvent(UpdateAnimationFrame));
+		}		
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
@@ -71,6 +87,9 @@ namespace AMON
 		}
 	}
 
+	/// <summary>
+	/// A class that encapsulates all the data needed to spawn the Explosion animation.
+	/// </summary>
 	public class ExplosionAnimation : Animation
 	{
 		public ExplosionAnimation(Vector2 position) : base(GraphicsManager.Instance.explosionAnimationTexture, position, 32, 32, 3) { }

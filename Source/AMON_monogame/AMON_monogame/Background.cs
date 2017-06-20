@@ -8,17 +8,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AMON
 {
+	/// <summary>
+	/// This class encapsulates the scrolling background texture
+	/// </summary>
 	class Background
 	{
+		//The image to scroll
 		private Texture2D backgroundImage;
+		//The image's vertical movement speed
 		private int verticalScrollSpeed;
-		private int tileCount = 2;
+		//The number of tiles of the image
+		private int tileCount;
+		//The locations of the tiles
 		Vector2[] tilePositions;
 
 		public Background(int scrollSpeed, Viewport viewport)
 		{
 			backgroundImage = GraphicsManager.Instance.backgroundTexture;
 			verticalScrollSpeed = scrollSpeed;
+			tileCount = 2;
 
 			tilePositions = new Vector2[tileCount];
 
@@ -28,6 +36,7 @@ namespace AMON
 
 		public void Tick(float dt)
 		{
+			//Move each tile up, snapping any tiles above the viewport to be below the viewport
 			for(int i = 0; i < tileCount; ++i)
 			{
 				tilePositions[i].Y -= verticalScrollSpeed * dt;
@@ -40,6 +49,7 @@ namespace AMON
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
+			//draw all tiles
 			for(int i = 0; i < tileCount; ++i)
 			{
 				spriteBatch.Draw(backgroundImage, tilePositions[i], Color.White);
